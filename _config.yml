@@ -30,7 +30,14 @@ paginate: 5 # amount of posts to show
 paginate_path: /page:num/
 search: true
 author_profile: false
-class: wide
+
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+      type: "posts"
+    values:
+      classes: "wide"
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
