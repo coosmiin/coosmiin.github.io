@@ -3,6 +3,7 @@ layout: single
 title:  "Raspberry Pi 3 Model B+ and .Net Core"
 date:   2019-07-14 +0200
 categories: raspberrypi netcore
+clasees: wide
 ---
 
 **Goal:** Run a hello world .Net Core application on a Raspberry Pi. At the time of this writing the Pi used is Pi 3 Model B+ and .Net Core version 2.1. The idea was to just run the application on the Pi while it is previously created and publish on another environment. Therefore the Pi needs to know only about the .Net Core runner and not the whole SDK.
