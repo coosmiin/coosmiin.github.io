@@ -38,6 +38,7 @@ defaults:
       type: "posts"
     values:
       layout: "single"
+      classes: "wide"
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
