@@ -30,6 +30,7 @@ paginate: 5 # amount of posts to show
 paginate_path: /page:num/
 search: true
 author_profile: false
+classes: wide
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
