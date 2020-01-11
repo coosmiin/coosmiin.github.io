@@ -1,5 +1,5 @@
 ---
-layout: single
+layout: splash
 title:  "Raspberry Pi 3 Model B+ and .Net Core"
 date:   2019-07-14 +0200
 categories: raspberrypi netcore
