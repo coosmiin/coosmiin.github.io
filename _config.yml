@@ -37,7 +37,7 @@ defaults:
       path: "" # an empty string here means all files in the project
       type: "posts"
     values:
-      layout: "splash"
+      layout: "single"
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
