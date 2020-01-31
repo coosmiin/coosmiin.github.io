@@ -24,12 +24,13 @@ email: coosmiin@yahoo.com
 description: >- # this means to ignore newlines until "baseurl:"
   A selfish incursion into programming. A pile of subjects that at some point had an influence on my day to day work and that at some point I might want to remember. Pretty selfish, ha?
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://coosmiin.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  coosmiin
 paginate: 5 # amount of posts to show
 paginate_path: /page:num/
 search: true
 author_profile: false
+google-site-verification: JeOixIygd0vdzo-msXlFhzV1GDzqwBt0E7zHO3qyLX4
 
 defaults:
   -
@@ -44,6 +45,7 @@ defaults:
 remote_theme: mmistakes/minimal-mistakes
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
   - jekyll-include-cache
 
 # Exclude from processing.
