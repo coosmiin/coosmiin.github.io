@@ -1,6 +1,6 @@
 ---
 title: "Enable ASP.NET Core Api on a Service Fabric Reliable Service"
-date: 2019-08-04 +0200
+date: 2020-01-31 +0200
 categories: aspnetcore servicefabric quickstart
 ---
 
