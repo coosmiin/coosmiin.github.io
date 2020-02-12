@@ -4,9 +4,7 @@ date: 2020-02-12 +0200
 categories: servicefabric semaphoreslim completiontasksource
 ---
 
-### TL;DR;
-
-Service Fabric partition swapping can have undesirable effects if you don't pay attention on how you use dependency injected objects in the two methods that fire up a reliable service (`RunAsync` and `CreateServiceReplicaListeners`). While using a `TaskCompletionSource` to ensure object availability between the two methods is a good idea, it should be used with care since it could leak objects reuse while partitions are swapping.
+**TL;DR;** Service Fabric partition swapping can have undesirable effects if you don't pay attention on how you use dependency injected objects in the two methods that fire up a reliable service (`RunAsync` and `CreateServiceReplicaListeners`). While using a `TaskCompletionSource` to ensure object availability between the two methods is a good idea, it should be used with care since it could leak objects reuse while partitions are swapping.
 
 ### The scenario
 
@@ -145,6 +143,7 @@ protected override async Task RunAsync(CancellationToken token)
 ```
 
 By simply wrapping our code in a try finally block we ensure that whenever our processing is suspended we also dismiss the `DemoQueue` objected linked to the `_demoQueueCompletionSource` by just creating a new `TaskCompletionSource` object. The try finally block is needed because when the replica is downgraded an `OperationCanceledException` is thrown.
+
 In order to simulate the replica swapping conditions we can use the `Move-ServiceFabricPrimaryReplica` PowerShell command
 
 ```powershell
@@ -155,4 +154,5 @@ Move-ServiceFabricPrimaryReplica -ServiceName fabric:/Application/StatefulApi -P
 ### Conclusion
 
 Whatever the technology or frameworks used there are always plenty of opportunities to shoot yourself in the foot. Now at least you know how not to do it by using `ServiceFabric`, `SemaphorSlim` and `TaskCompletionSource`.
+
 A full working example can be found on [GitHub](https://github.com/coosmiin/Playground/tree/master/Service%20Fabric%20-%20TaskCompletionSource%20and%20SemaphoreSlim)
