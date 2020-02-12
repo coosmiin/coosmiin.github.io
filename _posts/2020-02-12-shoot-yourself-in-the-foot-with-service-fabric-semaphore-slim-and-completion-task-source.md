@@ -40,9 +40,7 @@ new ServiceReplicaListener(serviceContext =>
 				.UseStartup<Startup>()
 				.UseUrls(url)
 				.Build();
-
 		_demoQueueCompletionSource.TrySetResult(host.Services.GetService<DemoQueue>());
-
 		return host;
 	}))
 ...
@@ -115,7 +113,7 @@ It's not that there are too many requests to be processed and the server cannot 
 In a Service Fabric cluster we take orchestration for granted and we don't really pay attention when partitions are being re-created, swapped or moved between nodes. In this case, taking a closer look at what happens when [partitions are swapped](https://docs.microsoft.com/en-us/azure/service-fabric/service-fabric-reliable-services-lifecycle#stateful-service-primary-swaps) we might get a clue about where the problem is. Looking back at our [listener creation](#runasync-and-createservicereplicalisteners) we see that:
 - When completed, the `_demoQueueCompletionSource` will provide a `DemoQueue` object
 - If the replica is swapped and becomes secondary the service class is not deconstructed and therefore the `_demoQueueCompletionSource` will remain in memory
-- If the same replica is swapped again and becomes primary, the `_demoQueueCompletionSource.TrySetResult(host.Services.GetService<DemoQueue>());` will not get the `DemoQueue` from the DI container since the `TaskCompletionSource` is already [RanToCompletion](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskstatus?view=netcore-3.1#System_Threading_Tasks_TaskStatus_RanToCompletion) and can provide a `DemoQueue` object. In the same time, the listener creation (which happens every time a replica becomes primary) will register a new/different `DemoQueue` object in the DI container. 
+- If the same replica is swapped again and becomes primary, the `_demoQueueCompletionSource.TrySetResult(host.Services.GetService<DemoQueue>())` will not get the `DemoQueue` from the DI container since the `TaskCompletionSource` is already [RanToCompletion](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskstatus?view=netcore-3.1#System_Threading_Tasks_TaskStatus_RanToCompletion) and can provide a `DemoQueue` object. In the same time, the listener creation (which happens every time a replica becomes primary) will register a new/different `DemoQueue` object in the DI container. 
 
 Therefore, there will be two `DemoQueue`s and as a consequence two `SemaphoreSlim`s objects that the application will operate with. One is used for awaiting while the other one is used for releasing the semaphore. The result is obvious, the processing of the queue is always awaiting on a semaphore that is never released.
 
