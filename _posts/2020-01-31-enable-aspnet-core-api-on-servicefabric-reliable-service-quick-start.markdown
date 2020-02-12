@@ -10,7 +10,7 @@ Often times I need to create a quick Service Fabric reliable service demo and I 
 
     Using Visual Studio create a new Service Fabric application. When asked to configure your first project, select a reliable service (stateless or statefull, it doesn't matter)
 
-2. Add the following nuget packages to your service: `Microsoft.AspNetCore.Hosting`, `Microsoft.AspNetCore.Mvc.Core`, `Microsoft.AspNetCore.Server.Kestrel`, `Microsoft.ServiceFabric.AspNetCore.Kestrel`
+2. Add the following NuGet packages to your service: `Microsoft.AspNetCore.Hosting`, `Microsoft.AspNetCore.Mvc.Core`, `Microsoft.AspNetCore.Server.Kestrel`, `Microsoft.ServiceFabric.AspNetCore.Kestrel`
 
 3. Add the `Kestrel` listener
 
@@ -47,12 +47,10 @@ Often times I need to create a quick Service Fabric reliable service demo and I 
 	internal class Startup
 	{
 		public IConfiguration Configuration { get; }
-
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvcCore();
 		}
-
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
 			app.UseMvc();
@@ -97,4 +95,4 @@ Often times I need to create a quick Service Fabric reliable service demo and I 
     </Service>
     ```
 
-Github repo with a full working example: [Service Fabric - Enable ASP.NET Core Api Quick Start](https://github.com/coosmiin/Playground/tree/master/Service%20Fabric%20-%20Enable%20ASP.NET%20Core%20Api%20Quick%20Start)
+GitHub repo with a full working example: [Service Fabric - Enable ASP.NET Core Api Quick Start](https://github.com/coosmiin/Playground/tree/master/Service%20Fabric%20-%20Enable%20ASP.NET%20Core%20Api%20Quick%20Start)
