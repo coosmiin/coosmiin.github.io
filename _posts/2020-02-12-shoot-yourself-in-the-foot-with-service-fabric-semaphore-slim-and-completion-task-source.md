@@ -153,4 +153,4 @@ Move-ServiceFabricPrimaryReplica -ServiceName fabric:/Application/StatefulApi -P
 
 Whatever the technology or frameworks used there are always plenty of opportunities to shoot yourself in the foot. Now at least you know how not to do it by using `ServiceFabric`, `SemaphorSlim` and `TaskCompletionSource`.
 
-A full working example can be found on [GitHub](https://github.com/coosmiin/Playground/tree/master/Service%20Fabric%20-%20TaskCompletionSource%20and%20SemaphoreSlim)
+A full working example can be found on [GitHub](https://github.com/coosmiin/Playground/tree/master/Service%20Fabric%20-%20TaskCompletionSource%20and%20SemaphoreSlim).
