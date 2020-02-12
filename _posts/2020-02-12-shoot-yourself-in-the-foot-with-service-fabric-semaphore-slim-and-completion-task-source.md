@@ -22,7 +22,7 @@ According to the [documentation](https://docs.microsoft.com/en-us/azure/service-
 
 Because the order of execution between the two methods is unknown, one way of making sure that object instances registered in the dependency container via `CreateServiceReplicaListeners` are available in `RunAsync` would be to use a `TaskCompletionSouce`. 
 
-The code for enabling the service listener from `CreateServiceReplicaListeners` could look like this (consider using my previous [quick start](({% post_url 2020-01-31-enable-aspnet-core-api-on-servicefabric-reliable-service-quick-start %})) as a starting point):
+The code for enabling the service listener from `CreateServiceReplicaListeners` could look like this (consider using my previous [quick start]({% post_url 2020-01-31-enable-aspnet-core-api-on-servicefabric-reliable-service-quick-start %}) as a starting point):
 
 ```csharp
 ...
