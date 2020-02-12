@@ -1,5 +1,5 @@
 ---
-title: "How to shoot yourself in the foot with Service Fabric, semaphore slim and completion task source"
+title: "How to shoot yourself in the foot with Service Fabric, SemaphoreSlim and CompletionTaskSource"
 date: 2020-02-12 +0200
 categories: servicefabric semaphoreslim completiontasksource
 ---
