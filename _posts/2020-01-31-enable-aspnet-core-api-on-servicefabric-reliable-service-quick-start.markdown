@@ -18,24 +18,24 @@ Often times I need to create a quick Service Fabric reliable service demo and I 
 
     ```csharp
     ...
-		protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+	protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+	{
+		return new ServiceInstanceListener[]
 		{
-			return new ServiceInstanceListener[]
-			{
-				new ServiceInstanceListener(serviceContext =>
-					new KestrelCommunicationListener(serviceContext, (url, listener) =>
-						new WebHostBuilder()
-							.UseKestrel()
-							.ConfigureServices(
-								 services => services
-									 .AddSingleton<StatelessServiceContext>(serviceContext))
-							.UseContentRoot(Directory.GetCurrentDirectory())
-							.UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
-							.UseStartup<Startup>()
-							.UseUrls(url)
-							.Build()))
-			};
-		}
+			new ServiceInstanceListener(serviceContext =>
+				new KestrelCommunicationListener(serviceContext, (url, listener) =>
+					new WebHostBuilder()
+						.UseKestrel()
+						.ConfigureServices(
+								services => services
+									.AddSingleton<StatelessServiceContext>(serviceContext))
+						.UseContentRoot(Directory.GetCurrentDirectory())
+						.UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+						.UseStartup<Startup>()
+						.UseUrls(url)
+						.Build()))
+		};
+	}
     ...
     ```
 

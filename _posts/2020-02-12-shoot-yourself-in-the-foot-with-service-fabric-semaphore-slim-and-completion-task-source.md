@@ -26,27 +26,27 @@ The code for enabling the service listener from `CreateServiceReplicaListeners` 
 
 ```csharp
 ...
-				new ServiceReplicaListener(serviceContext =>
-					new KestrelCommunicationListener(serviceContext, (url, listener) =>
-					{
-						var host = 
-							new WebHostBuilder()
-								.UseKestrel()
-								.ConfigureServices(
-									 services => services
-										 .AddSingleton<StatefulServiceContext>(serviceContext)
-										 .AddSingleton<IReliableStateManager>(this.StateManager)
-										 .AddSingleton<DemoQueue>())
-								.UseContentRoot(Directory.GetCurrentDirectory())
-								.UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
-								.UseStartup<Startup>()
-								.UseUrls(url)
-								.Build();
+new ServiceReplicaListener(serviceContext =>
+	new KestrelCommunicationListener(serviceContext, (url, listener) =>
+	{
+		var host = 
+			new WebHostBuilder()
+				.UseKestrel()
+				.ConfigureServices(
+						services => services
+							.AddSingleton<StatefulServiceContext>(serviceContext)
+							.AddSingleton<IReliableStateManager>(this.StateManager)
+							.AddSingleton<DemoQueue>())
+				.UseContentRoot(Directory.GetCurrentDirectory())
+				.UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+				.UseStartup<Startup>()
+				.UseUrls(url)
+				.Build();
 
-						_demoQueueCompletionSource.TrySetResult(host.Services.GetService<DemoQueue>());
+		_demoQueueCompletionSource.TrySetResult(host.Services.GetService<DemoQueue>());
 
-						return host;
-					}))
+		return host;
+	}))
 ...
 ```
 
@@ -54,14 +54,14 @@ Where the `_demoQueueCompletionSource` is just a private member of our service o
 And then in `RunAsync` we can get hold of our `demoQueue` just awaiting the completion source task:
 
 ```csharp
-		protected override async Task RunAsync(CancellationToken token)
-		{
-			var demoQueue = await _demoQueueCompletionSource.Task;
-			while (!token.IsCancellationRequested)
-			{
-				await demoQueue.ProcessQueueAsync(token);
-			}
-		}
+protected override async Task RunAsync(CancellationToken token)
+{
+	var demoQueue = await _demoQueueCompletionSource.Task;
+	while (!token.IsCancellationRequested)
+	{
+		await demoQueue.ProcessQueueAsync(token);
+	}
+}
 ```
 
 This construction makes sure that the same queue that is registered in the dependency container will be used in our `RunAsync` method.
@@ -71,27 +71,27 @@ This construction makes sure that the same queue that is registered in the depen
 The queue will make use of [semaphore slim](https://docs.microsoft.com/en-us/dotnet/api/system.threading.semaphoreslim) to ensure that the processing of items will happen on demand, any time a new item is added into the queue. Awaiting for the semaphore will ensure that computing resources are released when there are no elements to be processed. A dummy implementation could look like this:
 
 ```csharp
-	public class DemoQueue
+public class DemoQueue
+{
+	private SemaphoreSlim _semaphore = new SemaphoreSlim(0);
+	private Queue<string> _queue = new Queue<string>();
+	public void AddItem(string item)
 	{
-		private SemaphoreSlim _semaphore = new SemaphoreSlim(0);
-		private Queue<string> _queue = new Queue<string>();
-		public void AddItem(string item)
-		{
-			_queue.Enqueue(item);
-			_semaphore.Release();
-		}
-		public async Task ProcessQueueAsync(CancellationToken token) 
-		{
-			await _semaphore.WaitAsync(token);
-			while (_queue.TryDequeue(out string item))
-			{ // do something with the item
-			}
-		}
-		public int GetQueueSize()
-		{
-			return _queue.Count;
+		_queue.Enqueue(item);
+		_semaphore.Release();
+	}
+	public async Task ProcessQueueAsync(CancellationToken token) 
+	{
+		await _semaphore.WaitAsync(token);
+		while (_queue.TryDequeue(out string item))
+		{ // do something with the item
 		}
 	}
+	public int GetQueueSize()
+	{
+		return _queue.Count;
+	}
+}
 ```
 
 As long as the processing of the elements is fast enough when the queue is interrogated for its size it should return zero:
@@ -126,22 +126,22 @@ Therefore, there will be two `DemoQueue`s and as a consequence two `SemaphoreSli
 Changing a bit our `RunAsync` we can easily solve our problem:
 
 ```csharp
-		protected override async Task RunAsync(CancellationToken token)
-		{
-			try
-			{
-				var demoQueue = await _demoQueueCompletionSource.Task;
+protected override async Task RunAsync(CancellationToken token)
+{
+	try
+	{
+		var demoQueue = await _demoQueueCompletionSource.Task;
 
-				while (!token.IsCancellationRequested)
-				{
-					await demoQueue.ProcessQueueAsync(token);
-				}
-			}
-			finally
-			{
-				_demoQueueCompletionSource = new TaskCompletionSource<DemoQueue>();
-			}
+		while (!token.IsCancellationRequested)
+		{
+			await demoQueue.ProcessQueueAsync(token);
 		}
+	}
+	finally
+	{
+		_demoQueueCompletionSource = new TaskCompletionSource<DemoQueue>();
+	}
+}
 ```
 
 By simply wrapping our code in a try finally block we ensure that whenever our processing is suspended we also dismiss the `DemoQueue` objected linked to the `_demoQueueCompletionSource` by just creating a new `TaskCompletionSource` object. The try finally block is needed because when the replica is downgraded an `OperationCanceledException` is thrown.
