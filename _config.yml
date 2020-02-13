@@ -30,7 +30,12 @@ paginate: 5 # amount of posts to show
 paginate_path: /page:num/
 search: true
 author_profile: false
-google-site-verification: JeOixIygd0vdzo-msXlFhzV1GDzqwBt0E7zHO3qyLX4
+breadcrumbs: true  # disabled by default
+
+analytics:
+  provider: "google-gtag"
+  google: 
+    tracking_id: "UA-158362181-1"
 
 defaults:
   -
@@ -40,6 +45,7 @@ defaults:
     values:
       layout: "single"
       classes: "wide"
+      read_time: true
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
