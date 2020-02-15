@@ -33,11 +33,14 @@ search: true
 author:
   name: "Cosmin Roman"
   location: "Cluj-Napoca, Romania"
-  bio: "Just another selfish developer writing for his future self"
+  bio: "While I'm definetely a *[dark matter developer](https://www.hanselman.com/blog/DarkMatterDevelopersTheUnseen99.aspx)* and a *[ghost who codes](https://www.troyhunt.com/the-ghost-who-codes-how-anonymity-is/)*, I'm also just yet another selfish developer keeping a blog for his future self"
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: https://github.com/coosmiin
+    - label: "StackOverflow"
+      icon: "fab fa-fw fa-stack-overflow"
+      url: https://stackoverflow.com/users/490980/coz
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: https://www.linkedin.com/in/coz
