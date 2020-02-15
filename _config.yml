@@ -57,6 +57,7 @@ defaults:
       layout: "single"
       classes: "wide"
       read_time: true
+      author_profile: true
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
