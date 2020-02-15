@@ -32,8 +32,8 @@ search: true
 
 author:
   name: "Cosmin Roman"
-  location: "Cluj-Napoca"
-  bio: "Just another selfish developer writing for future him"
+  location: "Cluj-Napoca, Romania"
+  bio: "Just another selfish developer writing for his future self"
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
