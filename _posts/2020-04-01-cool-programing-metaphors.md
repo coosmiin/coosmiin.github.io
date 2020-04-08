@@ -20,6 +20,8 @@ Also known as LIFO (Last In First Out) the Stack is just another collection with
 
 <figure><img class="image-popup" src="img\imp-handbook-the-stack.png"></img></figure>
 
+<small>pag. 152 - [The Imposter's Handbook](https://bigmachine.io/products/the-imposters-handbook/) (Rob Conery)</small>
+
 ## Architecture
 
 #### Event Driven Architecture - Broker Topology
