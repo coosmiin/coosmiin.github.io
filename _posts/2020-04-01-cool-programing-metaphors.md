@@ -20,11 +20,7 @@ Also known as LIFO (Last In First Out) the Stack is just another collection with
 
 > The simplest way to think about the stack is by visualizing one of my big pet peeves: a stack of plates. The ones on the bottom never get used because we always grab the plates on the top!
 
-![the stack](img/imp-handbook-the-stack.png)
-test
-![the stack]({{ 'img/imp-handbook-the-stack.png' | relative_url }})
-
-<figure><img class="image-popup" src=""></img></figure>
+![the stack]({{ site.baseurl }}/_posts/img/imp-handbook-the-stack.png)
 
 <small>pag. 152 - [The Imposter's Handbook](https://bigmachine.io/products/the-imposters-handbook/) (Rob Conery)</small>
 
