@@ -1,8 +1,10 @@
 ---
 title: "Cool programing metaphors"
-date: 2020-04-01 +0200
+date: 2020-04-08 +0200
 categories: decorator strategy brokertopology
 toc: true
+toc_label: Topics
+toc_icon: quote-right
 toc_sticky: true
 ---
 
@@ -18,13 +20,17 @@ Also known as LIFO (Last In First Out) the Stack is just another collection with
 
 > The simplest way to think about the stack is by visualizing one of my big pet peeves: a stack of plates. The ones on the bottom never get used because we always grab the plates on the top!
 
-<figure><img class="image-popup" src="img\imp-handbook-the-stack.png"></img></figure>
+![the stack](img/imp-handbook-the-stack.png)
+test
+![the stack]({{ 'img/imp-handbook-the-stack.png' | relative_url }})
+
+<figure><img class="image-popup" src=""></img></figure>
 
 <small>pag. 152 - [The Imposter's Handbook](https://bigmachine.io/products/the-imposters-handbook/) (Rob Conery)</small>
 
 ## Architecture
 
-#### Event Driven Architecture - Broker Topology
+### Event Driven Architecture - Broker Topology
 
 The event-driven architecture pattern consists of two main topologies, the mediator and the broker. While explaining the broker, [Mark Richards](https://www.goodreads.com/author/show/19751098.Mark_Richards) makes the following analogy:
 > The best way to understand the broker topology is to think about it as a relay race. In a relay race, runners hold a baton and run for a certain distance, then hand off the baton to the next runner, and so on down the chain until the last runner crosses the finish line. In relay races, once a runner hands off the baton, she is done with the race. This is also true with the broker topology: once an event processor hands off the event, it is no longer involved with the processing of that specific event.
@@ -33,7 +39,7 @@ The event-driven architecture pattern consists of two main topologies, the media
 
 ## Design Patterns
 
-#### Decorator vs Strategy
+### Decorator vs Strategy
 
 While comparing `Decorator` and `Strategy` patterns the [GoF](http://wiki.c2.com/?GangOfFour) guys make the a note that the difference between them is like *changing the skin of an object versus changing its guts*:
 > We can think of a decorator as a skin over an object that changes its behavior. An alternative is to change the object's guts. The Strategy pattern is a good example of a pattern changing the guts.
@@ -42,7 +48,7 @@ While comparing `Decorator` and `Strategy` patterns the [GoF](http://wiki.c2.com
 
 ## .NET Internals
 
-#### Garbage Collection
+### Garbage Collection
 
 Garbage Collection timing is a delicate matter and I found to be perfectly explained by [Maoni Stephens](https://devblogs.microsoft.com/dotnet/author/maoni/) in his Food Court analogy:
 
