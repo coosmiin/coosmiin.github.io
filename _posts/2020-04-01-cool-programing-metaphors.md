@@ -1,6 +1,7 @@
 ---
 title: "Cool programing metaphors"
-date: 2020-04-08 +0200
+date: 2020-04-01 +0200
+last_modified_at: 2020-04-09 +0200
 categories: stack brokertopology decorator strategy garbagecollection
 toc: true
 toc_label: Topics
@@ -21,6 +22,7 @@ Also known as LIFO (Last In First Out) the Stack is just another collection with
 > The simplest way to think about the stack is by visualizing one of my big pet peeves: a stack of plates. The ones on the bottom never get used because we always grab the plates on the top!
 
 {% include figure image_path="/assets/images/imp-handbook-the-stack.png" %}
+![image-center](/assets/images/imp-handbook-the-stack.png){: .align-center}
 
 <small>pag. 152 - [The Imposter's Handbook](https://bigmachine.io/products/the-imposters-handbook/) (Rob Conery)</small>
 
