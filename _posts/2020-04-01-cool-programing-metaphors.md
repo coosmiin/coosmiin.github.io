@@ -21,7 +21,6 @@ Also known as LIFO (Last In First Out) the Stack is just another collection with
 
 > The simplest way to think about the stack is by visualizing one of my big pet peeves: a stack of plates. The ones on the bottom never get used because we always grab the plates on the top!
 
-{% include figure image_path="/assets/images/imp-handbook-the-stack.png" %}
 ![image-center](/assets/images/imp-handbook-the-stack.png){: .align-center}
 
 <small>pag. 152 - [The Imposter's Handbook](https://bigmachine.io/products/the-imposters-handbook/) (Rob Conery)</small>
