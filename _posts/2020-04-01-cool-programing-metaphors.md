@@ -1,7 +1,7 @@
 ---
 title: "Cool programing metaphors"
 date: 2020-04-08 +0200
-categories: decorator strategy brokertopology
+categories: stack brokertopology decorator strategy garbagecollection
 toc: true
 toc_label: Topics
 toc_icon: quote-right
