@@ -1,6 +1,6 @@
 ---
 title: "TL;DR; Don't care, just fix it"
-date: 2020-14-17 +0200
+date: 2020-04-17 +0200
 categories: "ssh"
 ---
 
