@@ -1,8 +1,8 @@
 ---
 title: "Cool programing metaphors"
 date: 2020-04-01 +0200
-last_modified_at: 2020-04-09 +0200
-categories: stack brokertopology decorator strategy garbagecollection
+last_modified_at: 2020-07-16 +0200
+categories: stack brokertopology decorator strategy garbagecollection domaindrivendesign entity valueobject
 toc: true
 toc_label: Topics
 toc_icon: quote-right
@@ -33,6 +33,28 @@ The event-driven architecture pattern consists of two main topologies, the media
 > The best way to understand the broker topology is to think about it as a relay race. In a relay race, runners hold a baton and run for a certain distance, then hand off the baton to the next runner, and so on down the chain until the last runner crosses the finish line. In relay races, once a runner hands off the baton, she is done with the race. This is also true with the broker topology: once an event processor hands off the event, it is no longer involved with the processing of that specific event.
 
 <small>pag. 17 - [Software Architecture Patterns](https://www.goodreads.com/en/book/show/25091671) (Mark Richards)</small>
+
+### Domain Driven Design
+
+#### Entities
+
+In domain driven design a model expressed in software follows usually one of the three model paterns: `ENTITIES`, `VALUE OBJECTS` and `SERVICES`. We say an object is an `ENTITY` when it is distinguished by its identity, rather than its attributes. [Eric Evans](https://domainlanguage.com/tag/eric-evans/)'s stadium analogy explains it better:
+
+> An application for booking seats in a stadium might treat seats and attendees as ENTITIES. In the case of assigned seating, in which each ticket has a seat-number on it, the seat is an ENTITY. Its identifier is the seat number, which is unique within the stadium. The seat may have many other attributes, such as its location, whether the view is obstructed, and the price, but only the seat number, or a unique row and position, is used to identify and distinguish seats.
+
+> On the other hand, if the event is “general admission”, meaning ticket-holders sit wherever they find an empty seat, there is no need to distinguish individual seats. Only the total number of seats is important. Although the seat numbers are still engraved on the physical seats, there is no need for the software to track them, and, in fact, it would be an error in the model to associate specific seat numbers with tickets, since there is no such constraint at the event. Then seats are not ENTITIES, and no identifier is needed.
+
+<small>pag. 67 - [Domain-Driven Design - Tackling Complexity in the Heart of Software](https://www.goodreads.com/book/show/179133.Domain_Driven_Design) (Eric Evans)</small>
+
+#### Value Objects
+
+On the other hand the same Eric Evans explains `VALUE OBJECTS` as objects that have no conceptual identity and which describe some characteristic of a thing:
+
+> If a child is drawing, he cares about the color of the marker he chooses. He may care about the sharpness of the tip. But if there are two markers of the same color and shape, he won’t care which he uses. If a marker is lost and replaced by another of the same color from a new pack, he can resume his work unconcerned about the switch. 
+
+> Ask the child about the various drawings on the refrigerator and he will quickly distinguish those he made from those his sister made. He and his sister have useful identities, as do their complete drawings. But imagine how complicated it would be if he had to track which lines in a drawing were made by each marker. Drawing would no longer be child’s play.
+
+<small>pag. 70 - [Domain-Driven Design - Tackling Complexity in the Heart of Software](https://www.goodreads.com/book/show/179133.Domain_Driven_Design) (Eric Evans)</small>
 
 ## Design Patterns
 
