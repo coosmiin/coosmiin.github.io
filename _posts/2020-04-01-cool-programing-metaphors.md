@@ -78,3 +78,13 @@ Garbage Collection timing is a delicate matter and I found to be perfectly expla
 > Now, the janitor needs a way to recognize if a dish is still in use – it would be quite rude for the janitor to take your dish away if you are still in the middle of using it (if they do that a lot I imagine they’d be fired…). If you are still eating, that’s pretty obvious. That’s the most common scenario. If say you need to leave temporarily (like if you suddenly remembered you needed to get a slice of cake before that dessert place closes…), you might put your jacket on the chair to indicate that you are still here. GC also needs to know if an object is still in use. The most common way is just by one object having a reference to another and that’s obvious to the GC. And there also exist other less common ways that require more effort to indicate to the GC that an object is in use, for example, the GC handles.
 
 <small>[Garbage Collection at Food Courts](https://devblogs.microsoft.com/dotnet/garbage-collection-at-food-courts/) (Maoni Stephens)</small>
+
+## Cloud
+
+### Why cloud?
+
+[Microsoft docs](https://docs.microsoft.com/en-us/learn/modules/discuss-why-cloud-services/1-introduction) explains why cloud services should be on the mind of everyone building software today by making a light bulb analogy:
+
+> When you turn on a light, you simply want the light to work. You know you need electricity for that to happen, but in that moment, the details of how the electricity gets to the light bulb aren't important. You might not think about electricity being created in a power plant, traveling through a large network of high-voltage transmission lines to your town, going through a substation, and eventually making its way into your home.
+
+> The process of turning on a light is hidden behind the simple act of flipping a switch. At this point, electricity becomes a utility, which has many benefits. First, you only pay for what you need. When you buy a light bulb, you don't pay your electricity provider up front for how long you could possibly use it. Instead, you pay for the amount of electricity that you actually use. Second, you don't worry about how or when power plants upgrade to the latest technology. Finally, you don't have to manage scaling the electricity. For example, as people move to your town, you can rest assured that your light will stay on.
