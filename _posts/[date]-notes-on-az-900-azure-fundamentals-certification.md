@@ -38,26 +38,48 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 - **_describe Infrastructure-as-a-Service (IaaS)_**
 
+	With IaaS, you rent IT infrastructure servers and virtual machines (VMs), storage, networks, and operating systems from a cloud provider on a pay-as-you-go basis. Characteristics:
+
+	- **Upfront costs**. IaaS has no upfront costs. Users pay only for what they consume.
+	- **User ownership**. The user is responsible for the purchase, installation, configuration, and management of their own software operating systems, middleware, and applications.
+	- **Cloud provider ownership**. The cloud provider is responsible for ensuring that the underlying cloud infrastructure (such as virtual machines, storage and networking) is available for the user.
 
 - **_describe Platform-as-a-Service (PaaS)_**
 
+	When deploying a web application using PaaS, you don't have to install an operating system, web server, or even system updates. Characteristics:
+
+	- **Upfront costs**. There are no upfront costs, and users pay only for what they consume.
+	- **User ownership**. The user is responsible for the development of their own applications. However, they are not responsible for managing the server or infrastructure. This allows the user to focus on the application or workload they want to run.
+	- **Cloud provider ownership**. The cloud provider is responsible for operating system management, and network and service configuration. Cloud providers are typically responsible for everything apart from the application that a user wants to run. They provide a complete managed platform on which to run an application.
 
 - **_describe Software-as-a-Service (SaaS)_**
 
+	Software as a Service (SaaS) is software that is centrally hosted and managed for the end customer. Characteristics: 
+
+	- **Upfront costs**. Users have no upfront costs; they pay a subscription, typically on a monthly or annual basis.
+	- **User ownership**. Users just use the application software; they are not responsible for any maintenance or management of that software.
+	- **Cloud provider ownership**. The cloud provider is responsible for the provision, management, and maintenance of the application software.
 
 - **_compare and contrast the three different service types_**
-
 
 ### Describe the differences between Public, Private and Hybrid cloud models
 
 - **_describe Public cloud_**
 
+	A public cloud is owned by the cloud services provider (also known as a hosting provider). It provides resources and services to multiple organizations and users, who connect to the cloud service via a secure network connection, typically over the internet.
 
 - **_describe Private cloud_**
 
+	A private cloud is owned and operated by the organization that uses the resources from that cloud. They create a cloud environment in their own datacenter and provide self-service access to compute resources to users within their organization. The organization remains the owner, entirely responsible for the operation of the services they provide.
 
 - **_describe Hybrid cloud_**
 
+	A hybrid cloud combines both public and private clouds, allowing you to run your applications in the most appropriate location.
 
 - **_compare and contrast the three different cloud models_**
 
+	&nbsp; | **Advantages** | **Disadvantages**
+	-- | -- | -- 
+	 **_Public_** | No CapEx, Agility, Consumption-based model, Maintenance, Skills | Security, Compliance, Ownership, Specific scenarios
+	 **_Private_** | Control, Security, Compliance, Specific scenarios | Upfront CapEx, Agility, Maintenance, Skills
+	 **_Hybrid_** | Flexibility, Costs, Control, Security, Compliance, Specific scenarios | Upfront CapEx, Costs, Skills, Ease of management
