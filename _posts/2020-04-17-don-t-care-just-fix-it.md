@@ -24,9 +24,10 @@ Apparently Git for Windows (starting with version 2.25.1) includes updates to ss
 ### npm ERR! code UNABLE_TO_VERIFY_LEAF_SIGNATURE
 
 You're doing a clean install of your dependencies by running `npm ci` and you get this: 
-
-> npm ERR! code UNABLE_TO_VERIFY_LEAF_SIGNATURE
-> npm ERR! request to ... failed, reason: unable to verify the first certificate
+```
+npm ERR! code UNABLE_TO_VERIFY_LEAF_SIGNATURE
+npm ERR! request to ... failed, reason: unable to verify the first certificate
+```
 
 You're left shoulder angel tells you that you trust the source and you can get rid of it by just disabling the `strict-ssl` check. Do it at your own risk:
 ```
