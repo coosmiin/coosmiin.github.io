@@ -481,6 +481,28 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 ### Describe Azure governance features
 
+- **_describe the functionality and usage of Role-Based Access Control (RBAC)_**
+
+	
+
+- **_describe the functionality and usage of resource locks_**
+
+- **_describe the functionality and usage of tags_**
+
+- **_describe the functionality and usage of Azure Policy_**
+
+- **_describe the functionality and usage of Azure Blueprints_**
+
+- **_describe the Cloud Adoption Framework for Azure_**
+
+	The **Cloud Adoption Framework for Azure** provides you with proven guidance to help with your cloud adoption journey. The Cloud Adoption Framework helps you create and implement the business and technology strategies needed to succeed in the cloud.
+
+	The Cloud Adoption Framework consists of tools, documentation, and proven practices. The Cloud Adoption Framework includes these stages:
+	- Define your strategy.
+	- Make a plan.
+	- Ready your organization.
+	- Adopt the cloud.
+	- Govern and manage your cloud environments.
 
 
 ### Describe privacy and compliance resources
