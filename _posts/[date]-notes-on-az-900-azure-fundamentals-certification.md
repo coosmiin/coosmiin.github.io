@@ -483,15 +483,33 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 - **_describe the functionality and usage of Role-Based Access Control (RBAC)_**
 
-	
+	Instead of defining the detailed access requirements for each individual, and then updating access requirements when new resources are created, Azure enables you to control access through **Azure role-based access control (Azure RBAC)**. Role-based access control is applied to a scope, which is a resource or set of resources that this access applies to. Scopes include: a management group (a collection of multiple subscriptions), a single subscription, a resource group or a single resource.
 
 - **_describe the functionality and usage of resource locks_**
 
+	A **resource lock** prevents resources from being accidentally deleted or changed. You can apply locks to a subscription, a resource group, or an individual resource. You can set the lock level to CanNotDelete or ReadOnly.
+
 - **_describe the functionality and usage of tags_**
+
+	Resource **tags** are another way to organize resources. Tags provide extra information, or metadata, about your resources. A resource tag consists of a name and a value. You can assign one or more tags to each Azure resource.
 
 - **_describe the functionality and usage of Azure Policy_**
 
+	**Azure Policy** is a service in Azure that enables you to create, assign, and manage policies that control or audit your resources. These policies enforce different rules and effects over your resource configurations so that those configurations stay compliant with corporate standards.
+
+	Azure Policy enables you to define both individual policies and groups of related policies, known as initiatives. Azure Policy evaluates your resources and highlights resources that aren't compliant with the policies you've created. Azure Policy can also prevent noncompliant resources from being created. Azure Policy comes with a number of built-in policy and initiative definitions that you can use, under categories such as Storage, Networking, Compute, Security Center, and Monitoring.
+
 - **_describe the functionality and usage of Azure Blueprints_**
+
+	Instead of having to configure features like Azure Policy for each new subscription, with **Azure Blueprints** you can define a repeatable set of governance tools and standard Azure resources that your organization requires.
+
+	Azure Blueprints orchestrates the deployment of various resource templates and other artifacts, such as:
+	- Role assignments
+	- Policy assignments
+	- Azure Resource Manager templates
+	- Resource groups
+
+	Each component in the blueprint definition is known as an _artifact_.
 
 - **_describe the Cloud Adoption Framework for Azure_**
 
@@ -503,7 +521,6 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	- Ready your organization.
 	- Adopt the cloud.
 	- Govern and manage your cloud environments.
-
 
 ### Describe privacy and compliance resources
 
