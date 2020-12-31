@@ -1,10 +1,15 @@
 ---
-title: "Notes on Microsoft Azure Fundamentals AZ-900 exam prerarations"
-date: [date] +0200
-categories: 
+title: "Notes on Microsoft Azure Fundamentals AZ-900 exam preparations"
+date: 2020-12-31 +0200
+last_modified_at: 2020-12-31 +0200
+categories: AZ-900 "Azure Fundamentals"
+toc: true
+toc_label: Topics
+toc_icon: quote-right
+toc_sticky: true
 ---
 
-While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900) exam, I thought it would be nice to track my progress by taking notes on various topics that I need to learn for the exam. My approach? Start from [exam skill outline](https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE3VwUY), follow the [learning paths](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900?tab=tab-learning-paths) and links suggested by Thomas Maurer in his [AZ-900 Study Guide](https://www.thomasmaurer.ch/2020/03/az-900-study-guide-microsoft-azure-fundamentals-2020).
+While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900) exam, I thought it would be nice to track my progress by taking notes on various topics that I need to learn for the exam. My approach? Start from [exam skill outline](https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE3VwUY) (November 9, 2020 version) and follow the [learning paths](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900?tab=tab-learning-paths). At the end, taking a simulation exam offered through a [Pluralsight's](https://app.pluralsight.com/paths/certificate/microsoft-azure-fundamentals-az-900) subscription via Kaplan Learn seemed like a good idea.
 
 ## Describe Cloud Concepts (20-25%)
 
@@ -524,7 +529,83 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 ### Describe privacy and compliance resources
 
+- **_describe the Microsoft core tenets of Security, Privacy, and Compliance_**
+
+- **_describe the purpose of the Microsoft Privacy Statement, Online Services Terms (OST) and Data Protection Amendment (DPA)_**
+
+	**The Microsoft Privacy Statement** explains what personal data Microsoft collects, how Microsoft uses it, and for what purposes.
+
+	**The Online Services Terms (OST)** is a legal agreement between Microsoft and the customer. The OST details the obligations by both parties with respect to the processing and security of customer data and personal data. The OST applies specifically to Microsoft's online services that you license through a subscription, including Azure, Dynamics 365, Office 365, and Bing Maps.
+
+	**The Data Protection Addendum (DPA)** further defines the data processing and security terms for online services. These terms include:
+	- Compliance with laws.
+	- Disclosure of processed data.
+	- Data Security, which includes security practices and policies, data encryption, data access, customer responsibilities, and compliance with auditing.
+	- Data transfer, retention, and deletion.
+
+- **_describe the purpose of the Trust Center_**
+
+	**The Trust Center** showcases Microsoft's principles for maintaining data integrity in the cloud and how Microsoft implements and supports security, privacy, compliance, and transparency in all Microsoft cloud products and services. The Trust Center is an important part of the Microsoft Trusted Cloud Initiative and provides support and resources for the legal and compliance community.
+
+- **_describe the purpose of the Azure compliance documentation_**
+
+	The **Azure compliance documentation** provides you with detailed documentation about legal and regulatory standards and compliance on Azure. Here you find compliance offerings across these categories:
+	- Global
+	- US government
+	- Financial services
+	- Health
+	- Media and manufacturing
+	- Regional
+
+	There are also additional compliance resources, such as audit reports, privacy information, compliance implementations and mappings, and white papers and analyst reports. Country and region privacy and compliance guidelines are also included. Some resources might require you to be signed in to your cloud service to access them.
+
+- **_describe the purpose of Azure Sovereign Regions (Azure Government cloud services and Azure China cloud services)_**
+
+	**Azure Government** is a separate instance of the Microsoft Azure service. It addresses the security and compliance needs of US federal agencies, state and local governments, and their solution providers. Azure Government offers physical isolation from non-US government deployments and provides screened US personnel.
+
+	**Azure China 21Vianet** is operated by 21Vianet. It's a physically separated instance of cloud services located in China. Azure China 21Vianet is independently operated and transacted by Shanghai Blue Cloud Technology Co., Ltd. ("21Vianet"), a wholly owned subsidiary of Beijing 21Vianet Broadband Data Center Co., Ltd.
+
 ## Describe Azure cost management and Service Level Agreements (10-15%)
 
 ### Describe methods for planning and managing costs
+
+- **_identify factors that can affect costs (resource types, services, locations, ingress and egress traffic)_**
+
+	**Resource type**: A number of factors influence the cost of Azure resources. They depend on the type of resource or how you customize it. For example, with a storage account you specify a type (such as block blob storage or table storage), a performance tier (standard or premium), and an access tier (hot, cool, or archive). These selections present different costs.
+
+	**Location**: Azure infrastructure is distributed globally, which enables you to deploy your services centrally or provision your services closest to where your customers use them. Different regions can have different associated prices. Because geographic regions can impact where your network traffic flows, network traffic is a cost influence to consider as well.
+
+	**Bandwidth** refers to data moving in and out of Azure datacenters. Some inbound data transfers (data going into Azure datacenters) are free. For outbound data transfers (data leaving Azure datacenters), data transfer pricing is based on zones.
+
+- **_identify factors that can reduce costs (reserved instances, reserved capacity, hybrid benefit, spot pricing)_**
+
+	**Azure Reservations** offers discounted prices on certain Azure services. Azure Reservations can save you up to 72 percent as compared to pay-as-you-go prices. To receive a discount, you reserve services and resources by paying in advance.
+
+	Using **Azure Hybrid Benefit**: if you've purchased licenses for Windows Server or SQL Server, and your licenses are covered by Software Assurance , you might be able to repurpose those licenses on VMs on Azure.
+
+- **_describe the functionality and usage of the Pricing calculator and the Total Cost of Ownership (TCO) calculator_**
+	
+	**Pricing calculator** is used to configure and estimate the costs for Azure products The pricing calculator displays Azure products in categories. You add these categories to your estimate and configure according to your specific requirements. You then receive a consolidated estimated price, with a detailed breakdown of the costs associated with each resource you added to your solution. You can export or share that estimate or save it for later. You can load a saved estimate and modify it to match updated requirements.
+
+	**The TCO Calculator** helps you estimate the cost savings of operating your solution on Azure over time, instead of in your on-premises datacenter.
+
+- **_describe the functionality and usage of Azure Cost Management_**
+
+	**Azure Cost Management + Billing** is a free service that helps you understand your Azure bill, manage your account and subscriptions, monitor and control Azure spending, and optimize resource use.
+
 ### Describe Azure Service Level Agreements (SLAs) and service lifecycles
+
+- **_describe the purpose of an Azure Service Level Agreement (SLA)_**
+
+	**A service-level agreement (SLA)** is a formal agreement between a service company and the customer. For Azure, this agreement defines the performance standards that Microsoft commits to for you, the customer. Each Azure service defines its own SLA. Azure services are organized by category.
+
+- **_identify actions that can impact an SLA (i.e. Availability Zones)_**
+
+	- Customization options that affect SLA - examples: Disks, Tiers.
+	- To improve availability (and therefore the SLA score):
+		- use multiple availability zones
+		- add region redundancy
+
+- **_describe the service lifecycle in Azure (Public Preview and General Availability)_**
+
+	The **service lifecycle** defines how every Azure service is released for public use. Typical phases: development, preview and general availability (GA).
