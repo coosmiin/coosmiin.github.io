@@ -1,5 +1,5 @@
 ---
-title: "Notes on Microsoft Azure Fundamentals AZ-900 exam preparations"
+title: "Microsoft Azure Fundamentals AZ-900 certification preparations notes"
 date: 2020-12-31 +0200
 last_modified_at: 2020-12-31 +0200
 categories: AZ-900 "Azure Fundamentals"
@@ -75,7 +75,7 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 - **_define cloud computing_**
 
-	Clout computing is the delivery of computing services over the internet, which is otherwise known as the cloud. These services include servers, storage, databases, networking, software, analytics, and intelligence. Cloud computing offers faster innovation, flexible resources, and economies of scale.
+	Cloud computing is the delivery of computing services over the internet, which is otherwise known as the cloud. These services include servers, storage, databases, networking, software, analytics, and intelligence. Cloud computing offers faster innovation, flexible resources, and economies of scale.
 
 - **_describe Public cloud_**
 
@@ -96,6 +96,11 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	 **_Public_** | No CapEx, Agility, Consumption-based model, Maintenance, Skills | Security, Compliance, Ownership, Specific scenarios
 	 **_Private_** | Control, Security, Compliance, Specific scenarios | Upfront CapEx, Agility, Maintenance, Skills
 	 **_Hybrid_** | Flexibility, Costs, Control, Security, Compliance, Specific scenarios | Upfront CapEx, Costs, Skills, Ease of management
+
+### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/fundamental-azure-concepts/knowledge-check/) 
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/fundamental-azure-concepts/summary/)
 
 ## Describe Core Azure Services (15-20%)
 
@@ -127,7 +132,6 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	Azure Resource Manager  is a management layer in which resource groups and all the resources within it are created, configured, managed, and deleted. It provides a consistent management layer which allows you automate the deployment and configuration of resources using different automation and scripting tools, such as Microsoft Azure PowerShell, Azure Command-Line Interface (Azure CLI), Azure portal, REST API, and client SDKs.
 
 	The benefits of using Resource Manager:
-
 	- Manage your infrastructure through declarative templates rather than scripts. A Resource Manager template is a JSON file that defines what you want to deploy to Azure.
 	- Deploy, manage, and monitor all the resources for your solution as a group, rather than handling these resources individually.
 	- Redeploy your solution throughout the development life cycle and have confidence your resources are deployed in a consistent state.
@@ -139,6 +143,11 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 - **_explain Azure resources_**
 
 	**Resource**: A manageable item that's available through Azure. Virtual machines (VMs), storage accounts, web apps, databases, and virtual networks are examples of resources.
+
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/azure-architecture-fundamentals/knowledge-check/) 
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/azure-architecture-fundamentals/summary/)
 
 ### Describe core resources available in Azure
 
@@ -167,27 +176,27 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	**Azure Virtual Networks** enable Azure resources, such as VMs, web apps, and databases, to communicate with each other, with users on the internet, and with your on-premises client computers. You can think of an Azure network as a set of resources that links other Azure resources.
 
 	Azure virtual networks provide the following key networking capabilities:
-		- Isolation and segmentation
-		- Internet communications
-		- Communicate between Azure resources via:
-			- Virtual networks
-			- Service endpoints
-		- Communicate with on-premises resources via:
-			- Point-to-site virtual private networks
-			- Site-to-site virtual private networks
-			- Azure ExpressRoute
-		- Route network traffic as follows:
-			- Route tables
-			- Border Gateway Protocol
-		- Filter network traffic via
-			- Network security groups
-			- Network virtual appliances
-		- Connect virtual networks by using virtual network _peering_
+	- Isolation and segmentation
+	- Internet communications
+	- Communicate between Azure resources via:
+		- Virtual networks
+		- Service endpoints
+	- Communicate with on-premises resources via:
+		- Point-to-site virtual private networks
+		- Site-to-site virtual private networks
+		- Azure ExpressRoute
+	- Route network traffic as follows:
+		- Route tables
+		- Border Gateway Protocol
+	- Filter network traffic via
+		- Network security groups
+		- Network virtual appliances
+	- Connect virtual networks by using virtual network _peering_
 
 	A **VPN gateway** is a type of virtual network gateway. **Azure VPN Gateway** instances are deployed in Azure Virtual Network instances and enable the following connectivity:
-		- Connect on-premises datacenters to virtual networks through a site-to-site connection.
-		- Connect individual devices to virtual networks through a point-to-site connection.
-		- Connect virtual networks to other virtual networks through a network-to-network connection.	
+	- Connect on-premises datacenters to virtual networks through a site-to-site connection.
+	- Connect individual devices to virtual networks through a point-to-site connection.
+	- Connect virtual networks to other virtual networks through a network-to-network connection.	
 	
 	All transferred data is encrypted in a private tunnel as it crosses the internet. You can deploy only one VPN gateway in each virtual network, but you can use one gateway to connect to multiple locations, which includes other virtual networks or on-premises datacenters. When you deploy a VPN gateway, you specify the VPN type: either _policy-based_ or _route-based_.
 
@@ -208,15 +217,15 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	**Azure Files** offers fully managed file shares in the cloud that are accessible via the industry standard Server Message Block and Network File System (preview) protocols. Azure file shares can be mounted concurrently by cloud or on-premises deployments of Windows, Linux, and macOS. One thing that distinguishes Azure Files from files on a corporate file share is that you can access the files from anywhere in the world, by using a URL that points to the file.
 
 	**Azure Storage** offers different **access tiers** for your blob storage, helping you store object data in the most cost-effective manner. The available access tiers include: 
-		- _Hot access tier_: Optimized for storing data that is accessed frequently (for example, images for your website).
-		- _Cool access tier_: Optimized for data that is infrequently accessed and stored for at least 30 days (for example, invoices for your customers).
-		- _Archive access tier_: Appropriate for data that is rarely accessed and stored for at least 180 days, with flexible latency requirements (for example, long-term backups).
+	- _Hot access tier_: Optimized for storing data that is accessed frequently (for example, images for your website).
+	- _Cool access tier_: Optimized for data that is infrequently accessed and stored for at least 30 days (for example, invoices for your customers).
+	- _Archive access tier_: Appropriate for data that is rarely accessed and stored for at least 180 days, with flexible latency requirements (for example, long-term backups).
 	
 	The following considerations apply to the different access tiers:
-		- Only the hot and cool access tiers can be set at the account level. The archive access tier isn't available at the account level.
-		- Hot, cool, and archive tiers can be set at the blob level, during upload or after upload.
-		- Data in the cool access tier can tolerate slightly lower availability, but still requires high durability, retrieval latency, and throughput characteristics similar to hot data. For cool data, a slightly lower availability service-level agreement (SLA) and higher access costs compared to hot data are acceptable trade-offs for lower storage costs.
-		- Archive storage stores data offline and offers the lowest storage costs, but also the highest costs to rehydrate and access data.
+	- Only the hot and cool access tiers can be set at the account level. The archive access tier isn't available at the account level.
+	- Hot, cool, and archive tiers can be set at the blob level, during upload or after upload.
+	- Data in the cool access tier can tolerate slightly lower availability, but still requires high durability, retrieval latency, and throughput characteristics similar to hot data. For cool data, a slightly lower availability service-level agreement (SLA) and higher access costs compared to hot data are acceptable trade-offs for lower storage costs.
+	- Archive storage stores data offline and offers the lowest storage costs, but also the highest costs to rehydrate and access data.
 
 - **_describe the benefits and usage of Cosmos DB, Azure SQL Database, Azure Database for MySQL, Azure Database for PostgreSQL, and SQL Managed Instance_**
 
@@ -229,7 +238,6 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	**Azure Database for MySQL** is a relational database service in the cloud, and it's based on the MySQL Community Edition database engine, versions 5.6, 5.7, and 8.0. With every Azure Database for MySQL server, you take advantage of built-in security, fault tolerance, and data protection that you would otherwise have to buy or design, build, and manage. With Azure Database for MySQL, you can use point-in-time restore to recover a server to an earlier state, as far back as 35 days.
 
 	Azure Database for MySQL delivers:
-
 	- Built-in high availability with no additional cost.
 	- Predictable performance and inclusive, pay-as-you-go pricing.
 	- Scale as needed, within seconds.
@@ -242,7 +250,6 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	**Azure Database for PostgreSQL** is a relational database service in the cloud. The server software is based on the community version of the open-source PostgreSQL database engine.
 
 	Moreover, Azure Database for PostgreSQL delivers the following benefits:
-
 	- Built-in high availability compared to on-premises resources. There's no additional configuration, replication, or cost required to make sure your applications are always available.
 	- Simple and flexible pricing. You have predictable performance based on a selected pricing tier choice that includes software patching, automatic backups, monitoring, and security.
 	- Scale up or down as needed, within seconds. You can scale compute or storage independently as needed, to make sure you adapt your service to match usage.
@@ -253,6 +260,21 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 	**Azure SQL Managed Instance** is a scalable cloud data service that provides the broadest SQL Server database engine compatibility with all the benefits of a fully managed platform as a service. Like Azure SQL Database, Azure SQL Managed Instance is a platform as a service (PaaS) database engine, which means that your company will be able to take advantage of the best features of moving your data to the cloud in a fully-managed environment. Azure SQL Database and Azure SQL Managed Instance offer many of the same features; however, Azure SQL Managed Instance provides several options that might not be available to Azure SQL Database (e.g. Cyrillic characters for collation). 
 	Azure SQL Managed Instance makes it easy to migrate your on-premises data on SQL Server to the cloud using the Azure Database Migration Service (DMS) or native backup and restore.
+
+#### Knowledge Check and Summary
+
+- Compute Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/azure-compute-fundamentals/knowledge-check/) 
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/azure-compute-fundamentals/summary/)
+- Azure Networking Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/azure-networking-fundamentals/knowledge-check/) 
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/azure-networking-fundamentals/summary/)
+- Azure Storage Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/azure-storage-fundamentals/knowledge-check/) 
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/azure-storage-fundamentals/summary/)
+- Azure Database Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/azure-database-fundamentals/knowledge-check/) 
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/azure-database-fundamentals/summary/)
 
 ## Describe core solutions and management tools on Azure (10-15%)
 
