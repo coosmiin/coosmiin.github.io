@@ -2,14 +2,16 @@
 title: "Microsoft Azure Fundamentals AZ-900 certification preparations notes"
 date: 2020-12-31 +0200
 last_modified_at: 2020-12-31 +0200
-categories: AZ-900 "Azure Fundamentals"
+categories: AZ-900 azure fundamentals
 toc: true
 toc_label: Topics
 toc_icon: quote-right
 toc_sticky: true
 ---
 
-While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900) exam, I thought it would be nice to track my progress by taking notes on various topics that I need to learn for the exam. My approach? Start from [exam skill outline](https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE3VwUY) (November 9, 2020 version) and follow the [learning paths](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900?tab=tab-learning-paths). At the end, taking a simulation exam offered through a [Pluralsight's](https://app.pluralsight.com/paths/certificate/microsoft-azure-fundamentals-az-900) subscription via Kaplan Learn seemed like a good idea.
+While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900) exam, I thought it would be nice to track my progress by taking notes on various topics that I need to learn for the exam. My approach? Start from [exam skill outline](https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE3VwUY) (November 9, 2020 version) and follow the [learning paths](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900?tab=tab-learning-paths). 
+
+At the end, taking a simulation exam offered through a [Pluralsight's](https://app.pluralsight.com/paths/certificate/microsoft-azure-fundamentals-az-900) subscription via Kaplan Learn seemed like a good idea. However, I've realized that the simulation exam was probably not adapted to the latest changes in the exam skills outline document. Nevertheless, it proved that just following the learning paths it might not be enough as there were details in the questions that were not covered in the learning paths.
 
 ## Describe Cloud Concepts (20-25%)
 
@@ -333,6 +335,21 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 	**Azure DevTest Labs** provides an automated means of managing the process of building, setting up, and tearing down virtual machines (VMs) that contain builds of your software projects. This way, developers and testers can perform tests across a variety of environments and builds. And this capability isn't limited to VMs. Anything you can deploy in Azure via an ARM template can be provisioned through DevTest Labs. Provisioning pre-created lab environments with their required configurations and tools already installed is a huge time saver for quality assurance professionals and developers.
 
+#### Knowledge Check and Summary
+
+- IoT Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/iot-fundamentals/7-knowledge-check/)
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/iot-fundamentals/8-summary/) 
+- AI Machine Learning Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/ai-machine-learning-fundamentals/7-knowledge-check/)
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/ai-machine-learning-fundamentals/8-summary/) 
+- Serverless Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/serverless-fundamentals/6-knowledge-check/)
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/serverless-fundamentals/7-summary/) 
+- Azure Devops Devtest Labs:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/azure-devops-devtest-labs/7-knowledge-check/)
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/azure-devops-devtest-labs/8-summary/) 
+
 ### Describe Azure management tools
 
 - **_describe the functionality and usage of the Azure Portal, Azure PowerShell, Azure CLI, Cloud Shell, and Azure Mobile App_**
@@ -377,6 +394,15 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 	- service issues
 	- planned maintenance
 	- health advisories (issues that require you to act to avoid service interruption, including service retirements and breaking changes)
+
+#### Knowledge Check and Summary
+
+- Management Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/management-fundamentals/9-knowledge-check/)
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/management-fundamentals/10-summary/) 
+- Monitoring Fundamentals:
+	- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/monitoring-fundamentals/7-knowledge-check/)
+	- [Summary](https://docs.microsoft.com/en-us/learn/modules/monitoring-fundamentals/8-summary/) 
 
 ## 	Describe general security and network security features (10-15%)
 
