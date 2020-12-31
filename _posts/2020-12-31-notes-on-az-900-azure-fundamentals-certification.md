@@ -146,10 +146,7 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 
 	**Resource**: A manageable item that's available through Azure. Virtual machines (VMs), storage accounts, web apps, databases, and virtual networks are examples of resources.
 
-#### Knowledge Check and Summary
-
-- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/azure-architecture-fundamentals/knowledge-check/) 
-- [Summary](https://docs.microsoft.com/en-us/learn/modules/azure-architecture-fundamentals/summary/)
+#### [Knowledge Check and Summary](https://docs.microsoft.com/en-us/learn/modules/azure-architecture-fundamentals/knowledge-check/)
 
 ### Describe core resources available in Azure
 
