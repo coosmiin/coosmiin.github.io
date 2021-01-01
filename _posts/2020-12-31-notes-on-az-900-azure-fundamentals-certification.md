@@ -413,10 +413,10 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 	**Azure Security Center** is a monitoring service that provides visibility of your security posture across all of your services, both on Azure and on-premises. The term security posture refers to cybersecurity policies and controls, as well as how well you can predict, prevent, and respond to security threats.
 
 	Security Center includes advanced cloud defense capabilities for virtual machines, network security, and file integrity:
-	- Just-in-time VM access
-	- Adaptive application controls
-	- Adaptive network hardening
-	- File integrity monitoring	
+	- Just-in-time VM access: This access blocks traffic by default to specific network ports of virtual machines, but allows traffic for a specified time when an administrator requests and approves it.
+	- Adaptive application controls: In the background, Security Center uses machine learning to look at the processes running on a virtual machine. It creates exception rules for each resource group that holds the virtual machines and provides recommendations. This process provides alerts that inform the company about unauthorized applications that are running on its VMs.
+	- Adaptive network hardening: Security Center can monitor the internet traffic patterns of the VMs and compare those patterns with the company's current network security group (NSG) settings. From there, Security Center can make recommendations on whether the NSGs should be locked down further and provide remediation steps.
+	- File integrity monitoring: Describes the monitoring of changes to important files on both Windows and Linux, registry settings, applications, and other aspects that might indicate a security attack.
 
 	**Secure score** is a measurement of an organization's security posture. Secure score is based on security controls, or groups of related security recommendations. Your score is based on the percentage of security controls that you satisfy.
 
@@ -454,6 +454,11 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 - **_describe the functionality and usage of Azure Dedicated Hosts_**
 
 	Some organizations must follow regulatory compliance that requires them to be the only customer using the physical machine that hosts their virtual machines. **Azure Dedicated Host** provides dedicated physical servers to host your Azure VMs for Windows and Linux.
+
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/protect-against-security-threats-azure/7-knowledge-check)
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/protect-against-security-threats-azure/7-knowledge-check) 
 
 ### Describe Azure network security
 
@@ -500,6 +505,11 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 	- The Basic service tier is automatically enabled for free as part of your Azure subscription. Always-on traffic monitoring and real-time mitigation of common network-level attacks provide the same defenses that Microsoft's online services use. 
 	- The Standard service tier can help prevent: Volumetric attacks, Protocol attacks and Resource-layer (application-layer) attacks (only with web application firewall).
 
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/secure-network-connectivity-azure/8-knowledge-check/)
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/secure-network-connectivity-azure/9-summary/) 
+
 ## Describe identity, governance, privacy, and compliance features (20-25%)
 
 ### Describe core Azure identity services
@@ -531,6 +541,11 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 	Azure AD **Multi-Factor Authentication** is a Microsoft service that provides multifactor authentication capabilities. Azure AD Multi-Factor Authentication enables users to choose an additional form of authentication during sign-in, such as a phone call or mobile app notification.
 
 	**Single sign-on** enables a user to sign in one time and use that credential to access multiple resources and applications from different providers.
+
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/secure-access-azure-identity-services/5-knowledge-check)
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/secure-access-azure-identity-services/6-summary) 
 
 ### Describe Azure governance features
 
@@ -575,6 +590,11 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 	- Adopt the cloud.
 	- Govern and manage your cloud environments.
 
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/build-cloud-governance-strategy-azure/11-knowledge-check)
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/build-cloud-governance-strategy-azure/12-summary) 
+
 ### Describe privacy and compliance resources
 
 - **_describe the Microsoft core tenets of Security, Privacy, and Compliance_**
@@ -613,6 +633,11 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 
 	**Azure China 21Vianet** is operated by 21Vianet. It's a physically separated instance of cloud services located in China. Azure China 21Vianet is independently operated and transacted by Shanghai Blue Cloud Technology Co., Ltd. ("21Vianet"), a wholly owned subsidiary of Beijing 21Vianet Broadband Data Center Co., Ltd.
 
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/examine-privacy-compliance-data-protection-standards/8-knowledge-check)
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/examine-privacy-compliance-data-protection-standards/9-summary) 
+
 ## Describe Azure cost management and Service Level Agreements (10-15%)
 
 ### Describe methods for planning and managing costs
@@ -641,6 +666,11 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 
 	**Azure Cost Management + Billing** is a free service that helps you understand your Azure bill, manage your account and subscriptions, monitor and control Azure spending, and optimize resource use.
 
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/plan-manage-azure-costs/7-knowledge-check/)
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/plan-manage-azure-costs/8-summary/) 
+
 ### Describe Azure Service Level Agreements (SLAs) and service lifecycles
 
 - **_describe the purpose of an Azure Service Level Agreement (SLA)_**
@@ -657,3 +687,8 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 - **_describe the service lifecycle in Azure (Public Preview and General Availability)_**
 
 	The **service lifecycle** defines how every Azure service is released for public use. Typical phases: development, preview and general availability (GA).
+
+#### Knowledge Check and Summary
+
+- [Knowledge Check](https://docs.microsoft.com/en-us/learn/modules/choose-azure-services-sla-lifecycle/6-knowledge-check/)
+- [Summary](https://docs.microsoft.com/en-us/learn/modules/choose-azure-services-sla-lifecycle/7-summary/) 
