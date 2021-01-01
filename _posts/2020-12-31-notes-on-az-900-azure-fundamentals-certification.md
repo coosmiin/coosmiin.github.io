@@ -1,7 +1,7 @@
 ---
 title: "Microsoft Azure Fundamentals AZ-900 certification preparations notes"
 date: 2020-12-31 +0200
-last_modified_at: 2020-12-31 +0200
+last_modified_at: 2021-01-01 +0200
 categories: AZ-900 azure fundamentals
 toc: true
 toc_label: Topics
