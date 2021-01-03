@@ -1,17 +1,24 @@
 ---
 title: "Microsoft Azure Fundamentals AZ-900 certification preparations notes"
 date: 2020-12-31 +0200
-last_modified_at: 2021-01-01 +0200
+last_modified_at: 2021-01-03 +0200
 categories: AZ-900 azure fundamentals
 toc: true
 toc_label: Topics
 toc_icon: quote-right
-toc_sticky: true
 ---
 
 While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900) exam, I thought it would be nice to track my progress by taking notes on various topics that I need to learn for the exam. My approach? Start from [exam skill outline](https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE3VwUY) (November 9, 2020 version) and follow the [learning paths](https://docs.microsoft.com/en-us/learn/certifications/exams/az-900?tab=tab-learning-paths). 
 
-At the end, taking a simulation exam offered through a [Pluralsight's](https://app.pluralsight.com/paths/certificate/microsoft-azure-fundamentals-az-900) subscription via Kaplan Learn seemed like a good idea. However, I've realized that the simulation exam was probably not adapted to the latest changes in the exam skills outline document. Nevertheless, it proved that just following the learning paths it might not be enough as there were details in the questions that were not covered in the learning paths.
+At the end, taking a simulation exam offered through a [Pluralsight's](https://app.pluralsight.com/paths/certificate/microsoft-azure-fundamentals-az-900) subscription via Kaplan Learn seemed like a good idea. However, I've realized that the simulation exams are definitely not adapted to the latest changes in the exam skills outline document. They might even be miss-leading and untrustworthy since the difference between the latest versions of the exam skills outline document are significant enough. Nevertheless, it proved that just following the learning paths it might not be enough as there were details in the questions that were not covered in the learning paths.
+
+**UPDATE 2021-01** 
+
+Few remarks right after I've passed the exam:
+- I have mixed feelings about using an outdated Kaplan Learn plan. If they don't update their content - half of their question are useless. You might be better reading the learn path once more.
+- You might be living on the edge by just following the learning path and not diving into more details for each topic. My takeaways are (if I'll ever take another similar exam):
+	- First, read all the modules in the learning path. It is also useful to follow the skills outline. You don't have to insist on details that are not covered by the skills outline.
+	- Use your gut feeling to identify which modules are described well enough and which ones are not (if there are details you cannot understand most probably they are not). Check detailed description about those in the links at the end of each module or by just searching in the Azure documentation.
 
 ## Describe Cloud Concepts (20-25%)
 
@@ -231,7 +238,7 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 
 - **_describe the benefits and usage of Cosmos DB, Azure SQL Database, Azure Database for MySQL, Azure Database for PostgreSQL, and SQL Managed Instance_**
 
-	**Azure Cosmos DB** is a globally distributed, multi-model database service. You can elastically and independently scale throughput and storage across any number of Azure regions worldwide. Azure Cosmos DB supports schema-less data, which lets you build highly responsive and "Always On" applications to support constantly changing data. At the lowest level, Azure Cosmos DB stores data in atom-record-sequence (ARS) format. The data is then abstracted and projected as an API, which you specify when you're creating your database. Your choices include SQL, MongoDB, Cassandra, Tables and Gremlin.
+	**Azure Cosmos DB** is a globally distributed, multi-model database service. You can elastically and independently scale throughput and storage across any number of Azure regions worldwide. Azure Cosmos DB supports schema-less data, which lets you build highly responsive and "Always On" applications to support constantly changing data. At the lowest level, Azure Cosmos DB stores data in atom-record-sequence (ARS) format. The data is then abstracted and projected as an API, which you specify when you're creating your database. Your choices include SQL, MongoDB, Cassandra, Azure Tables and Gremlin.
 
 	**Azure SQL Database** is a relational database based on the latest stable version of the Microsoft SQL Server database engine. SQL Database is a high-performance, reliable, fully managed, and secure database.
 	Azure SQL Database is a platform as a service (PaaS) database engine. It handles most of the database management functions, such as upgrading, patching, backups, and monitoring, without user involvement.
@@ -262,6 +269,15 @@ At the end, taking a simulation exam offered through a [Pluralsight's](https://a
 
 	**Azure SQL Managed Instance** is a scalable cloud data service that provides the broadest SQL Server database engine compatibility with all the benefits of a fully managed platform as a service. Like Azure SQL Database, Azure SQL Managed Instance is a platform as a service (PaaS) database engine, which means that your company will be able to take advantage of the best features of moving your data to the cloud in a fully-managed environment. Azure SQL Database and Azure SQL Managed Instance offer many of the same features; however, Azure SQL Managed Instance provides several options that might not be available to Azure SQL Database (e.g. Cyrillic characters for collation). 
 	Azure SQL Managed Instance makes it easy to migrate your on-premises data on SQL Server to the cloud using the Azure Database Migration Service (DMS) or native backup and restore.
+
+- **_describe the benefits and usage of Azure Marketplace_**
+
+	**Azure Marketplace** helps connect users with Microsoft partners, independent software vendors, and startups that are offering their solutions and services, which are optimized to run on Azure. Azure Marketplace customers can find, try, purchase, and provision applications and services from hundreds of leading service providers. All solutions and services are certified to run on Azure.
+
+	The solution catalog spans several industry categories such as open-source container platforms, virtual machine images, databases, application build and deployment software, developer tools, threat detection, and blockchain. Using Azure Marketplace, you can provision end-to-end solutions quickly and reliably, hosted in your own Azure environment.
+
+	Azure Marketplace is designed for IT pros and cloud developers interested in commercial and IT software. Microsoft partners also use it as a launch point for all joint go-to-market activities.
+
 
 #### Knowledge Check and Summary
 
