@@ -6,7 +6,6 @@ categories: ssh npm
 toc: true
 toc_label: Topics
 toc_icon: quote-right
-toc_sticky: true
 ---
 
 You are in the flow, you are on track, you do stuff that matters (to you) and then something happens that ruins it. Now you have to fix that "other" thing first before you can continue. It might be interesting to get into details, but you just don't care - you can't know everything. Worse, maybe it happened before and you don't remember how you fixed it back then. You wonder why you haven't type few hints about it in a blog post. Here it is..

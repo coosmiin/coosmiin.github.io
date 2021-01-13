@@ -6,7 +6,6 @@ categories: stack brokertopology decorator strategy garbagecollection domaindriv
 toc: true
 toc_label: Topics
 toc_icon: quote-right
-toc_sticky: true
 ---
 
 While reading books or blogs about programing it happens that I encounter such cool explanations or metaphors about a specific topics that I imagine stopping the time and memorizing them on the spot. Since that is not possible, noting them down in a blog post seems like a decent idea.
