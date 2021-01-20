@@ -44,6 +44,8 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 **Azure Functions** is a serverless application platform. It allows developers to host business logic that can be executed without provisioning infrastructure. Functions provides intrinsic scalability and you are charged only for the resources used. You can write your function code in the language of your choice, including C#, F#, JavaScript, Python, and PowerShell Core. Support for package managers like NuGet and NPM is also included, so you can use popular libraries in your business logic.
 
+An Azure Functions app stores management information, code, and logs in Azure Storage. The storage account must support Azure Blob, Queue, Files, and Table storage; use a general Azure Storage account for this purpose.
+
 - **_implement input and output bindings for a function_**
 
 	Bindings are a declarative way to connect data and services to your function. Bindings know how to talk to different services, which means you don't have to write code in your function to connect to data sources and manage connections. The platform takes care of that complexity for you as part of the binding code. Each binding has a direction - your code reads data from input bindings, and writes data to output bindings. Each function can have zero or more bindings to manage the input and output data processed by the function.
@@ -118,10 +120,10 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 	- You can define the workflows in code. You don't need to write a JSON description or use a workflow design tool.
 	- Functions can be called both synchronously and asynchronously. Output from the called functions is saved locally in variables and used in subsequent function calls.
 	- Azure checkpoints the progress of a function automatically when the function awaits. Azure may choose to dehydrate the function and save its state while the function waits, to preserve resources and reduce costs. When the function starts running again, Azure will rehydrate it and restore its state.
-
+ 
 	Function types:
 	- _Client_ functions are the entry point for creating an instance of a Durable Functions orchestration. They can run in response to an event from many sources, such as a new HTTP request arriving, a message being posted to a message queue, an event arriving in an event stream. You can write them in any of the supported languages.
-	- _Orchestrator_ functions describe how actions are executed, and the order in which they are run. You write the orchestration logic in code (C# or JavaScript).
+	- _Orchestrator_ functions describe how actions are executed, and the order in which they are run. You write the orchestration logic in code (only C# or JavaScript).
 	- _Activity_ functions are the basic units of work in a durable function orchestration. An activity function contains the actual work performed by the tasks being orchestrated.
 
 	Application patterns:
@@ -131,4 +133,173 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 	- _Monitor_ - This pattern implements a recurring process in a workflow, possibly looking for a change in state. For example, you could use this pattern to poll until specific conditions are met.
 	- _Human interaction_ - This pattern combines automated processes that also involve some human interaction. A manual process within an automated process is tricky because people aren't as highly available and as responsive as most computers. Human interaction can be incorporated using timeouts and compensation logic that runs if the human fails to interact correctly within a specified response time. An approval process is an example of a process that involves human interaction.
 
+## Develop for Azure storage (10-15%)
 
+### Develop solutions that use Cosmos DB storage
+
+- **_select the appropriate API for your solution_**
+
+- **_implement partitioning schemes_**
+
+- **_interact with data using the appropriate SDK_**
+
+- **_set the appropriate consistency level for operations_**
+
+- **_create Cosmos DB containers_**
+
+- **_implement scaling (partitions, containers)_**
+
+- **_implement server-side programming including stored procedures, triggers, and change feed notifications_**
+
+### Develop solutions that use blob storage
+
+- **_move items in Blob storage between storage accounts or containers_**
+
+- **_set and retrieve properties and metadata_**
+
+- **_interact with data using the appropriate SDK_**
+
+- **_implement data archiving and retention_**
+
+- **_implement hot, cool, and archive storage_**
+
+## Implement Azure security (15-20%)
+
+## Monitor, troubleshoot, and optimize Azure solutions (10-15%)
+
+## Connect to and consume Azure services and third-party services (25-30%)
+
+### Develop an App Service Logic App
+
+- **_create a Logic App_**
+
+- **_create a custom connector for Logic Apps_**
+
+- **_create a custom template for Logic Apps_**
+
+### Implement API Management
+
+The **Azure API Management (APIM)** service enables you to construct an API from a set of disparate microservices. **Azure API Management (APIM)** is a fully managed cloud service that you can use to publish, secure, transform, maintain, and monitor APIs. It helps organizations publish APIs to external, partner, and internal developers to unlock the potential of their data and services. API Management handles all the tasks involved in mediating API calls, including _request authentication and authorization_, _rate limit and quota enforcement_, _request and response transformation_, _logging and tracing_, and _API version management_. APIM enables you to create and manage modern API gateways for existing backend services no matter where they are hosted.
+
+By default the new API is created under the `azure-api.net` domain.
+
+- **_create an APIM instance_**
+
+	In Azure Portal: Function App -> Api Management -> Create new.
+
+	Composing an API using API Management has advantages that include:
+	- Client apps are coupled to the API expressing business logic, not the underlying technical implementation with individual microservices. You can change the location and definition of the services without necessarily reconfiguring or updating the client apps.
+	- API Management acts as an intermediary. It forwards requests to the right microservice, wherever it is located, and returns responses to users. Users never see the different URIs where microservices are hosted.
+	- You can use API Management policies to enforce consistent rules on all microservices in the product. For example, you can transform all XML responses into JSON, if that is your preferred format. 
+	- Policies also enable you to enforce consistent security requirements.
+
+	API Management also includes helpful tools - you can test each microservice and its operations to ensure that they behave in accordance with your requirements. You can also monitor the behavior and performance of deployed services.
+
+	Azure API Management supports importing Azure Function Apps as new APIs or appending them to existing APIs. The process automatically generates a host key in the Azure Function App, which is then assigned to a named value in Azure API Management.
+
+- **_configure authentication for APIs_**
+
+	???
+
+- **_define policies for APIs_**
+
+	???
+
+### Develop event-based solutions
+
+Events are lighter weight than messages, and are most often used for broadcast communications. The components sending the event are known as publishers, and receivers are known as subscribers.
+
+- **_implement solutions that use Azure Event Grid_**
+
+	**Azure Event Grid** is a fully-managed event routing service running on top of Azure Service Fabric. Event Grid distributes events from different sources, such as Azure Blob storage accounts or Azure Media Services, to different handlers, such as Azure Functions or Webhooks. Event Grid was created to make it easier to build event-based and serverless applications on Azure.
+
+	Event Grid supports most Azure services as a publisher or subscriber and can be used with third-party services. It provides a dynamically scalable, low-cost, messaging system that allows publishers to notify subscribers about a status change.
+
+	There are several concepts in Azure Event Grid that connect a source to a subscriber:
+	- Events: What happened. Events are the data messages passing through Event Grid that describe what has taken place. Each event is self-contained, can be up to 64 KB.
+	- Event sources: Where the event took place. Event sources are responsible for sending events to Event Grid. Each event source is related to one or more event types.
+	- Topics: The endpoint where publishers send events. Event topics categorize events into groups. Topics are divided into system topics, and custom topics.
+	- Event subscriptions: The endpoint or built-in mechanism to route events, sometimes to multiple handlers. Subscriptions are also used by handlers to filter incoming events intelligently.
+	- Event handlers: The app or service reacting to the event.
+
+	Event source disambiguation: _Azure Event Hub_ has the concept of an event publisher which is often confused with the event source. A publisher to Event Hub is the user or organization that decides to send events to Event Grid. For example, Microsoft publishes events for several Azure services.
+
+	Use Event Grid when you need these features:
+	- _Simplicity_: It is straightforward to connect sources to subscribers in Event Grid.
+	- _Advanced_ filtering: Subscriptions have close control over the events they receive from a topic.
+	- _Fan-out_: You can subscribe to an unlimited number of endpoints to the same events and topics.
+	- _Reliability_: Event Grid retries event delivery for up to 24 hours for each subscription.
+	- _Pay-per-event_: Pay only for the number of events that you transmit.
+
+- **_implement solutions that use Azure Notification Hubs_**
+
+	???
+
+- **_implement solutions that use Azure Event Hub_**
+
+	**Azure Event Hubs** is a cloud-based, event-processing service that can receive and process millions of events per second. Event Hubs acts as a front door for an event pipeline, to receive incoming data and stores this data until processing resources are available.. Unlike Event Grid, however, it is optimized for extremely high throughput, a large number of publishers, security, and resiliency.
+
+	_Events_. An event is a small packet of information (a datagram) that contains a notification. Events can be published individually, or in batches, but a single publication (individual or batch) can't exceed 1 MB.
+
+	_Publishers_. Event publishers are any app or device that can send out events using either HTTPS or Advanced Message Queuing Protocol (AMQP) 1.0. For publishers that send data frequently, AMQP has better performance. However, it has a higher initial session overhead, because a persistent bidirectional socket and transport-level security (TLS) or SSL/TLS has to be set up first.
+	
+	_Subscribers_. Event subscribers are apps that use one of two supported programmatic methods to receive and process events from an Event Hub.
+
+	_Consumer groups_. An Event Hub consumer group represents a specific view of an Event Hub data stream. By using separate consumer groups, multiple subscriber apps can process an event stream independently, and without affecting other apps. However, the use of many consumer groups isn't a requirement, and for many apps, the single default consumer group is sufficient.
+
+	_Partitions_. As Event Hubs receives communications, it divides them into _partitions_. _Partitions_ are buffers into which the communications are saved. Because of the event buffers, events are not completely ephemeral, and an event isn't missed just because a subscriber is busy or even offline. The subscriber can always use the buffer to "catch up." By default, events stay in the buffer for 24 hours before they automatically expire. The buffers are called partitions because the data is divided amongst them. Every event hub has at least two partitions, and each partition has a separate set of subscribers.
+
+	_Capture_. Event Hubs can send all your events immediately to Azure Data Lake or Azure Blob storage for inexpensive, permanent persistence.
+
+	_Authentication_. All publishers are authenticated and issued a token. This means Event Hubs can accept events from external devices and mobile apps, without worrying that fraudulent data from pranksters could ruin our analysis.
+
+	Event Hubs has support for pipelining event streams to other Azure services. Using it with Azure Stream Analytics, for instance, allows complex analysis of data in near real time, with the ability to correlate multiple events and look for patterns. In this case, Stream Analytics would be considered a subscriber.
+
+	Choose Event Hubs if:
+	- You need to support authenticating a large number of publishers.
+	- You need to save a stream of events to Data Lake or Blob storage.
+	- You need aggregation or analytics on your event stream.
+	- You need reliable messaging or resiliency.
+
+### Develop message-based solutions
+
+In the terminology of distributed applications, messages have the following characteristics: it contains raw data, produced by one component, that will be consumed by another component; it contains the data itself, not just a reference to that data; the sending component expects the message content to be processed in a certain way by the destination component. The integrity of the overall system may depend on both sender and receiver doing a specific job.
+
+Benefits of queues: increased reliability, message delivery guarantees, transactional support
+
+- **_implement solutions that use Azure Service Bus**_
+
+	**Service Bus** is a message broker system intended for enterprise applications. These apps often utilize multiple communication protocols, have different data contracts, higher security requirements, and can include both cloud and on-premises services. Service Bus is built on top of a dedicated messaging infrastructure designed for exactly these scenarios.
+
+	A _queue_ is a simple temporary storage location for messages. A sending component adds a message to the queue. A destination component picks up the message at the front of the queue. Under ordinary circumstances, each message is received by only one receiver.
+
+	_Topics_ are like queues, but can have multiple subscribers. When a message is sent to a topic instead of a queue, multiple components can be triggered to do their work. Internally, topics use queues. When you post to a topic, the message is copied and dropped into the queue for each subscription. The queue means that the message copy will stay around to be processed by each subscription branch even if the component processing that subscription is too busy to keep up.
+
+	A _relay_ is an object that performs synchronous, two-way communication between applications. Unlike queues and topics, it is not a temporary storage location for messages. Instead, it provides bidirectional, unbuffered connections across network boundaries such as firewalls. Use a relay when you want direct communications between components as if they were located on the same network segment but separated by network security devices.
+
+	Use Service Bus topics if you:
+	- Need multiple receivers to handle each message
+
+	Use Service Bus queues if you:
+	- Need an At-Most-Once delivery guarantee.
+	- Need a FIFO guarantee.
+	- Need to group messages into transactions.
+	- Want to receive messages without polling the queue.
+	- Need to provide a role-based access model to the queues.
+	- Need to handle messages larger than 64 KB but less than 256 KB.
+	- Queue size will not grow larger than 80 GB.
+	- Want to publish and consume batches of messages.
+
+- **_implement solutions that use Azure Queue Storage queues**_
+
+	**Queue storage** is a service that uses Azure Storage to store large numbers of messages that can be securely accessed from anywhere in the world using a simple REST-based interface. Queues can contain millions of messages, limited only by the capacity of the storage account that owns it.
+
+	Use Queue storage if you:
+	- Need an audit trail of all messages that pass through the queue.
+	- Expect the queue to exceed 80 GB in size.
+	- Want to track progress for processing a message inside of the queue.
+
+	Every request to a queue must be authorized and there are several options to choose from: 
+	- Azure Active Directory: You can use role-based authentication and identify specific clients based on AAD credentials.
+	- Shared Key: Sometimes referred to as an account key, this is an encrypted key signature associated with the storage account. Every storage account has two of these keys that can be passed with each request to authenticate access. Using this approach is like using a root password - it provides full access to the storage account.
+	- Shared access signature - A shared access signature (SAS) is a generated URI that grants limited access to objects in your storage account to clients. You can restrict access to specific resources, permissions, and scope to a data range to automatically turn off access after a period of time.
