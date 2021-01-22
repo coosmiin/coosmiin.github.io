@@ -16,17 +16,49 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 - **_provision VMs_**
 
+	Things to consider:
+	- Network: 
+		- Address space: When you set up a virtual network, you specify the available address spaces, subnets, and security. If the VNet will be connected to other VNets, you must select address ranges that are not overlapping.
+		- Segregation: After deciding the virtual network address space(s), you can create one or more subnets for your virtual network. You do this to break up your network into more manageable sections. For example, you might assign 10.1.0.0 to VMs, 10.2.0.0 to back-end services, and 10.3.0.0 to SQL Server VMs.
+		- Secure the network: By default, there is no security boundary between subnets, so services in each of these subnets can talk to one another. However, you can set up Network Security Groups (NSGs), which allow you to control the traffic flow to and from subnets and to and from VMs. NSGs act as software firewalls, applying custom rules to each inbound or outbound request at the network interface and subnet level.
+	- Plan VM deployment: What does the server communicate with? Which ports are open? Which OS is used? How much disk space is in use? What kind of data does this use? Are there restrictions (legal or otherwise) with not having it on-premises? What sort of CPU, memory, and disk I/O load does the server have? Is there burst traffic to account for?
+	- Name the VM: This name also defines a manageable Azure resource, and it's not trivial to change later. That means you should choose names that are meaningful and consistent, so you can easily identify what the VM does. A good convention is to include the following information in the name: Environment, Location, Instance, Product or Service, Role. Ex: devusc-webvm01
+	- Location: The location can limit your available options. Each region has different hardware available and some configurations are not available in all regions. There are price differences between locations.
+	- Size Options: General purpose, Compute optimized, Memory optimized, Storage optimized, GPU, High performance computes
+	- Pricing Model: There are two separate costs the subscription will be charged for every VM: compute and storage.
+		- Compute costs - Compute expenses are priced on a per-hour basis but billed on a per-minute basis.
+		- Storage costs - You are charged separately for the storage the VM uses.
+	- Storage: Best practice is that all Azure virtual machines will have at least two virtual hard disks (VHDs). Virtual disks can be backed by either Standard or Premium Storage accounts. When you create disks, you will have two options for managing the relationship between the storage account and each VHD:
+		- Unmanaged disks: you are responsible for the storage accounts that are used to hold the VHDs that correspond to your VM disks.
+		- Managed disks: the newer and recommended disk storage model. You specify the size of the disk, up to 4 TB, and Azure creates and manages both the disk and the storage.
+	- Operating system: Windows or Linux. However, if you can't find a suitable OS image, you can create your disk image with what you need, upload it to Azure storage, and use it to create an Azure VM. Keep in mind that Azure only supports 64-bit operating systems.
+
 - **_configure VMs for remote access_**
 
+	Secure Shell (SSH) is an encrypted connection protocol that allows secure sign-ins over unsecured connections. SSH allows you to connect to a terminal shell from a remote location using a network connection. There are two approaches we can use to authenticate an SSH connection: username and password, or an SSH key pair.
+
+	There are two parts to an SSH key pair: a public key and a private key.
+	- The public key is placed on your Linux VM or any other service that you wish to use with public-key cryptography. This can be shared with anyone.
+	- The private key is what you present to verify your identity to your Linux VM when you make an SSH connection. Consider this confidential information and protect this like you would a password or any other private data.
+
+	With a public IP, we can interact with the VM over the Internet. Public IP addresses in Azure are dynamically allocated by default. That means the IP address can change over time - for VMs the IP address assignment happens when the VM is restarted. You can pay more to assign static addresses.
+
+	To connect to the VM via SSH, you need:
+	- the public IP address of the VM
+	- the username of the local account on the VM
+	- a public key configured in that account
+	- access to the corresponding private key
+	- port 22 open on the VM
+
 - **_create ARM templates_**
+
+	Resource Manager templates are JSON files that define the resources you need to deploy for your solution. Create resource templates from the Automation section for a specific VM by selecting the Export template option. 
 
 - **_create container images for solutions by using Docker_**
 
 - **_publish an image to the Azure Container Registry_**
 
 - **_run containers by using Azure Container Instance_**
-
-- **_Azure Kubernetes Service (AKS) is out of scope_**
 
 ### Create Azure App Service Web Apps
 
@@ -163,13 +195,23 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_move items in Blob storage between storage accounts or containers_**
 
+???
+
 - **_set and retrieve properties and metadata_**
+
+???
 
 - **_interact with data using the appropriate SDK_**
 
+??? - maybe read the exercises again
+
 - **_implement data archiving and retention_**
 
+???
+
 - **_implement hot, cool, and archive storage_**
+
+???
 
 ## Implement Azure security (15-20%)
 
