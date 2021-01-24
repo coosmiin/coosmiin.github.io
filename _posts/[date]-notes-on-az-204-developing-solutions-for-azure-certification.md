@@ -35,7 +35,7 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 - **_configure VMs for remote access_**
 
-	Secure Shell (SSH) is an encrypted connection protocol that allows secure sign-ins over unsecured connections. SSH allows you to connect to a terminal shell from a remote location using a network connection. There are two approaches we can use to authenticate an SSH connection: username and password, or an SSH key pair.
+	_Secure Shell (SSH)_ is an encrypted connection protocol that allows secure sign-ins over unsecured connections. SSH allows you to connect to a terminal shell from a remote location using a network connection. There are two approaches we can use to authenticate an SSH connection: username and password, or an SSH key pair.
 
 	There are two parts to an SSH key pair: a public key and a private key.
 	- The public key is placed on your Linux VM or any other service that you wish to use with public-key cryptography. This can be shared with anyone.
@@ -49,6 +49,8 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 	- a public key configured in that account
 	- access to the corresponding private key
 	- port 22 open on the VM
+
+	_Remote Desktop (RDP)_ provides remote connectivity to the UI of Windows-based computers. Microsoft provides RDP clients for the following operating systems: Windows (built-in), macOS, iOS and Android. There are also open-source Linux clients, such as Remmina that enable you to connect to a Windows PC from an Ubuntu distribution.
 
 - **_create ARM templates_**
 
