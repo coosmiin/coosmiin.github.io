@@ -52,13 +52,59 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 	_Remote Desktop (RDP)_ provides remote connectivity to the UI of Windows-based computers. Microsoft provides RDP clients for the following operating systems: Windows (built-in), macOS, iOS and Android. There are also open-source Linux clients, such as Remmina that enable you to connect to a Windows PC from an Ubuntu distribution.
 
+	You can secure your management ports with _just-in-time access_. You can lock down inbound traffic to your Azure Virtual Machines with Azure Security Center's just-in-time (JIT) virtual machine (VM) access feature. You can request access to a JIT-enabled VM from Security Center, Azure virtual machines, PowerShell, or the REST API.
+
 - **_create ARM templates_**
 
 	Resource Manager templates are JSON files that define the resources you need to deploy for your solution. Create resource templates from the Automation section for a specific VM by selecting the Export template option. 
 
+	Advantages:
+	- Declarative syntax
+	- Repeatable results
+	- Orchestration: You don't have to worry about the complexities of ordering operations. Resource Manager orchestrates the deployment of interdependent resources so they're created in the correct order. When possible, Resource Manager deploys resources in parallel so your deployments finish faster than serial deployments.
+	- Modular files: You can break your templates into smaller, reusable components and link them together at deployment time.
+	- Extensibility: With deployment scripts, you can add PowerShell or Bash scripts to your templates.
+	Testing: You can make sure your template follows recommended guidelines by testing it with the ARM template tool kit (arm-ttk). This test kit is a PowerShell script that you can download from GitHub.
+	- Preview changes: You can use the what-if operation to get a preview of changes before deploying the template. With what-if, you see which resources will be created, updated, or deleted, and any resource properties that will be changed. The what-if operation checks the current state of your environment and eliminates the need to manage state.
+	- Built-in validation: Your template is deployed only after passing validation.
+	- Tracked deployments: In the Azure portal, you can review the deployment history and get information about the template deployment. You can see the template that was deployed, the parameter values passed in, and any output values.
+	- Policy as code: Azure Policy is a policy as code framework to automate governance. If you're using Azure policies, policy remediation is done on non-compliant resources when deployed through templates.
+	- Deployment Blueprints: You can take advantage of Blueprints provided by Microsoft to meet regulatory and compliance standards. These blueprints include pre-built templates for various architectures.
+	- CI/CD integration
+	- Exportable code: You can get a template for an existing resource group by either exporting the current state of the resource group, or viewing the template used for a particular deployment.
+	- Authoring tools
+
+	The template has the following sections:
+	- Parameters - Provide values during deployment that allow the same template to be used with different environments.
+	- Variables - Define values that are reused in your templates. They can be constructed from parameter values.
+	- User-defined functions - Create customized functions that simplify your template.
+	- Resources - Specify the resources to deploy.
+	- Outputs - Return values from the deployed resources.
+
+	After creating your template, you may wish to share it with other users in your organization. Template specs enable you to store a template as a resource type.
+
+	Commands:
+	- PowerShell: `New-AzResourceGroupDeployment -Name myDeploymentName -ResourceGroupName myResourceGroup -TemplateFile $templateFile`
+	- CLI: `az deployment group create --name myDeploymentName --resource-group myResourceGroup --template-file $templateFile`
+
 - **_create container images for solutions by using Docker_**
 
+	
+
 - **_publish an image to the Azure Container Registry_**
+
+	Container Registry is an Azure service that you can use to create your own private Docker registries. Like Docker Hub, Container Registry is organized around repositories that contain one or more images. Container Registry also lets you automate tasks such as redeploying an app when an image is rebuilt.
+
+	Security is an important reason to choose Container Registry instead of Docker Hub:
+	- You have much more control over who can see and use your images.
+	- You can sign images to increase trust and reduce the chances of an image becoming accidentally (or intentionally) corrupted or otherwise infected.
+	- All images stored in a container registry are encrypted at rest.
+	- Container Registry runs in Azure. The registry can be replicated to store images near where they're likely to be deployed.
+	- Container Registry is highly scalable, providing enhanced throughput for Docker pulls that can span many nodes concurrently. The Premium SKU of Container Registry includes 500 GiB of storage.
+
+	You create a registry by using either the Azure portal or the Azure CLI `acr create` command. In addition to storing and hosting images, you can also use Container Registry to build images. Instead of building an image yourself and pushing it to Container Registry, use the CLI to upload the Docker file and other files that make up your image. Container Registry will then build the image for you. Use the `acr build` command to run a build.
+
+	You use the _tasks_ feature of Container Registry to rebuild your image whenever its source code changes automatically. You configure a Container Registry task to monitor the GitHub repository that contains your code and trigger a build each time it changes. Container Registry tasks must be created from the command line.
 
 - **_run containers by using Azure Container Instance_**
 
@@ -66,13 +112,56 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 - **_create an Azure App Service Web App_**
 
+	**Azure App Service** is a fully managed web application hosting platform. This platform as a service (PaaS) offered by Azure allows you to focus on designing and building your app while Azure takes care of the infrastructure to run and scale your applications.
+
+	Using the Azure portal, you can easily add deployment slots to an App Service web app. For instance, you can create a staging deployment slot where you can push your code to test on Azure. Once you are happy with your code, you can easily swap the staging deployment slot with the production slot.
+
+	The Azure portal provides out-of-the-box continuous integration and deployment with Azure DevOps, GitHub, Bitbucket, FTP, or a local Git repository on your development machine. Connect your web app with any of the above sources and App Service will do the rest for you by automatically syncing your code and any future changes on the code into the web app.
+
+	Baked into the web app is the ability to scale up/down or scale out. Depending on the usage of the web app, you can scale your app up/down by increasing/decreasing the resources of the underlying machine that is hosting your web app. Resources can be number of cores or the amount of RAM available.
+
+	Creating a web app allocates a set of hosting resources in App Service, which you can use to host any web-based application that is supported by Azure, whether it be ASP.NET Core, Node.js, Java, Python, etc.
+
+	Among other things, web app requires the following:
+	- Publish type: You can deploy your application to App Service as code or as a ready-to-run Docker image. Selecting Docker image will activate the Docker tab of the wizard, where you provide information about the Docker registry from which App Service will retrieve your image.
+	- Runtime stack: If you choose to deploy your application as code, App Service needs to know what runtime your application uses (examples include Node.js, Python, Java, and .NET). If you deploy your application as a Docker image, you will not need to choose a runtime stack, since your image will include it.
+	- Operating system: If you are deploying your app as code, many of the available runtime stacks are limited to one operating system or the other. If your application is packaged as a Docker image, choose the operating system on which your image is designed to run. Selecting Windows activates the Monitoring tab, where you have the option to enable _Application Insights_. Application Insights can be used from Linux-hosted apps as well, but this turnkey, no-code option is only available on Windows.
+	- App Service plans: An App Service plan is a set of virtual server resources that run App Service apps. A plan's size (sometimes referred to as its sku or pricing tier) determines the performance characteristics of the virtual servers that run the apps assigned to the plan and the App Service features that those apps have access to. Every App Service web app you create must be assigned to a single App Service plan that runs it. App Service plans are the unit of billing for App Service. The size of each App Service plan in your subscription, in addition to the bandwidth resources used by the apps deployed to those plans, determines the price that you pay. The number of web apps deployed to your App Service plans has no effect on your bill.
+
 - **_enable diagnostics logging_**
 
 - **_deploy code to a web app_**
 
+	_Automated deployment_, or continuous integration, is a process used to push out new features and bug fixes in a fast and repetitive pattern with minimal impact on end users.
+
+	Azure supports automated deployment directly from several sources. The following options are available:
+	- Azure DevOps: You can push your code to Azure DevOps (previously known as Visual Studio Team Services), build your code in the cloud, run the tests, generate a release from the code, and finally, push your code to an Azure Web App.
+	- GitHub: Azure supports automated deployment directly from GitHub. When you connect your GitHub repository to Azure for automated deployment, any changes you push to your production branch on GitHub will be automatically deployed for you.
+	- Bitbucket: With its similarities to GitHub, you can configure an automated deployment with Bitbucket.
+	- OneDrive: Microsoft's cloud-based storage. You must have a Microsoft Account linked to a OneDrive account to deploy to Azure.
+	- Dropbox: Azure supports deployment from Dropbox, which is a popular cloud-based storage system that is similar to OneDrive.
+
+	There are a few options that you can use to _manually_ push your code to Azure:
+	- Git: App Service web apps feature a Git URL that you can add as a remote repository. Pushing to the remote repository will deploy your app.
+	- az webapp up: webapp up is a feature of the az command-line interface that packages your app and deploys it. Unlike other deployment methods, az webapp up can create a new App Service web app for you if you haven't already created one.
+	- ZIP deploy: Use az webapp deployment source config-zip to send a ZIP of your application files to App Service. ZIP deploy can also be accessed via basic HTTP utilities such as curl.
+	- WAR deploy: It's an App Service deployment mechanism specifically designed for deploying Java web applications using WAR packages. WAR deploy can be accessed using the Kudu HTTP API located at https://<your-app-name>.scm.azurewebsites.net/api/wardeploy.
+	- Visual Studio: Visual Studio features an App Service deployment wizard that can walk you through the deployment process.
+	- FTP/S: FTP or FTPS is a traditional way of pushing your code to many hosting environments, including App Service.
+
+	Within a single Azure App Service web app, you can create multiple deployment slots. Each slot is a separate instance of that web app, and it has a separate hostname. You can deploy a different version of your web app into each slot. Deployment slots are available only when your web app uses an App Service plan in the Standard, Premium, or Isolated tier. The new slot is effectively a separate web app with a different hostname. That's why anyone on the internet can access it if they know that hostname. You can control access to a slot by using IP address restrictions. 
+
 - **_configure web app settings including SSL, API, and connection strings_**
 
 - **_implement autoscaling rules, including scheduled autoscaling, and scaling by operational or system metrics_**
+
+	When you create a web app, you can either create a new App Service plan or use an existing one. If you select an existing plan, any other web apps that use the same plan will share resources with your web app. They'll all scale together, so they need to have the same scaling requirements. If your apps have different requirements, use a separate App Service plan for each one.
+
+	You scale out by adding more instances to an App Service plan, up to the limit available for your selected tier.
+
+	You scale an App Service plan up and down by changing the pricing tier and hardware level that it runs on. Scaling up can cause an interruption in service to client apps running at the time. Also, scaling up can cause the outgoing IP addresses for the web app to change.
+
+	??? autoscaling ???
 
 ### Implement Azure functions
 
@@ -217,6 +306,31 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 ## Implement Azure security (15-20%)
 
+### Implement user authentication and authorization
+
+- **_implement OAuth2 authentication_**
+
+- **_create and implement shared access signatures_**
+
+- **_register apps and use Azure Active Directory to authenticate users_**
+
+- **_control access to resources by using role-based access controls (RBAC)_**
+
+	You control access to resources using Azure RBAC by creating role assignments, which control how permissions are enforced. You can think of these elements as "who", "what", and "where".
+	- _Security principal_ (who): A security principal is just a fancy name for a user, group, or application that you want to grant access to.
+	- _Role definition_ (what you can do): A role definition is a collection of permissions.
+	- _Scope_ (where): Scope is where the access applies to.
+
+### Implement secure cloud solutions
+
+- **_secure app configuration data by using the App Configuration and KeyVault API_**
+	
+- **_manage keys, secrets, and certificates by using the KeyVault API_**
+
+	Key Vault access has two facets: the management of the Key Vault itself (_management plane_), and accessing the data contained in the Key Vault (_data plane_)
+
+- **_implement Managed Identities for Azure resources_**
+
 ## Monitor, troubleshoot, and optimize Azure solutions (10-15%)
 
 ## Connect to and consume Azure services and third-party services (25-30%)
@@ -355,3 +469,7 @@ Benefits of queues: increased reliability, message delivery guarantees, transact
 	- Azure Active Directory: You can use role-based authentication and identify specific clients based on AAD credentials.
 	- Shared Key: Sometimes referred to as an account key, this is an encrypted key signature associated with the storage account. Every storage account has two of these keys that can be passed with each request to authenticate access. Using this approach is like using a root password - it provides full access to the storage account.
 	- Shared access signature - A shared access signature (SAS) is a generated URI that grants limited access to objects in your storage account to clients. You can restrict access to specific resources, permissions, and scope to a data range to automatically turn off access after a period of time.
+
+
+	Broken URLs for Thomas Maurer:
+	- Extend Azure Resource Manager template functionality
