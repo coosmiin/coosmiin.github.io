@@ -81,6 +81,11 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 	- Resources - Specify the resources to deploy.
 	- Outputs - Return values from the deployed resources.
 
+	Example: to deploy a VM (in a new virtual network with a single subnet) using ARM template with C# you need the following files:
+	- CreateVMTemplate.json
+	- Parameters.json
+	- azureauth.properties
+
 	After creating your template, you may wish to share it with other users in your organization. Template specs enable you to store a template as a resource type.
 
 	Commands:
@@ -89,7 +94,9 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 - **_create container images for solutions by using Docker_**
 
-	
+	How to:
+	- Use the docker build command to create the container image and tag it: `docker build ./aci-helloworld -t aci-tutorial-app`
+	- Before you deploy the container to Azure Container Instances, use docker run to run it locally and confirm that it works. The -d switch lets the container run in the background, while -p allows you to map an arbitrary port on your computer to port 80 in the container: `docker run -d -p 8080:80 aci-tutorial-app`
 
 - **_publish an image to the Azure Container Registry_**
 
@@ -104,9 +111,64 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 	You create a registry by using either the Azure portal or the Azure CLI `acr create` command. In addition to storing and hosting images, you can also use Container Registry to build images. Instead of building an image yourself and pushing it to Container Registry, use the CLI to upload the Docker file and other files that make up your image. Container Registry will then build the image for you. Use the `acr build` command to run a build.
 
-	You use the _tasks_ feature of Container Registry to rebuild your image whenever its source code changes automatically. You configure a Container Registry task to monitor the GitHub repository that contains your code and trigger a build each time it changes. Container Registry tasks must be created from the command line.
+	You use the _tasks_ feature of Container Registry to rebuild your image whenever its source code changes automatically. You configure a Container Registry task to monitor the GitHub repository that contains your code and trigger a build each time it changes. Container Registry tasks must be created from the command line. Example: this command is making use of _ACR tasks_ to run `docker build` in the cloud: `az acr build --registry $ACR_NAME --image helloacrtasks:v1 .`
 
 - **_run containers by using Azure Container Instance_**
+
+	Azure Container Instances is useful for scenarios that can operate in isolated containers, including simple applications, task automation, and build jobs. Here are some of the benefits:
+	- Fast startup: Launch containers in seconds.
+	- Per second billing: Incur costs only while the container is running.
+	- Hypervisor-level security: Isolate your application as completely as it would be in a VM.
+	- Custom sizes: Specify exact values for CPU cores and memory.
+	- Persistent storage: Mount Azure Files shares directly to a container to retrieve and persist state.
+	- Linux and Windows: Schedule both Windows and Linux containers using the same API.	
+
+	Azure Container Instances enables exposing your container groups directly to the internet with an IP address and a fully qualified domain name (FQDN). When you create a container instance, you can specify a custom DNS name label so your application is reachable at customlabel.azureregion.azurecontainer.io.
+	
+	Azure Container Instances has three restart-policy options:
+	- Always: Containers in the container group are always restarted. This policy makes sense for long-running tasks such as a web server. This is the default setting applied when no restart policy is specified at container creation.
+	- Never: Containers in the container group are never restarted. The containers run one time only.
+	- OnFailure: Containers in the container group are restarted only when the process executed in the container fails (when it terminates with a nonzero exit code). The containers are run at least once. This policy works well for containers that run short-lived tasks.	
+
+	By default, Azure Container Instances are stateless. If the container crashes or stops, all of its state is lost. To persist state beyond the lifetime of the container, you must mount a volume from an external store. To mount an Azure file share as a volume in Azure Container Instances, you need these three values:
+	- The storage account name
+	- The share name
+	- The storage account access key
+
+	Commands:
+	- Create container: 
+	```
+		az container create \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer \
+			--image microsoft/aci-helloworld \
+			--ports 80 \
+			--dns-name-label $DNS_NAME_LABEL \
+			--location eastus
+			--environment-variables \
+				DB_ENDPOINT=$DB_ENDPOINT \
+				DB_MASTERKEY=$DB_MASTERKEY
+	```
+	(To use secure environment variables, you use the --secure-environment-variables argument instead of the --environment-variables argument)
+	- Get logs:
+	```
+		az container logs \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer
+	```
+	- Get container events (attach). The `az container attach` command shows container events and logs. By contrast, the `az container logs` only shows the logs and not the startup events.
+	```
+		az container attach \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer
+	```
+	- Execute commands in container:
+	```
+		az container exec \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer \
+			--exec-command /bin/sh
+	```
 
 ### Create Azure App Service Web Apps
 
@@ -123,16 +185,41 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 	Creating a web app allocates a set of hosting resources in App Service, which you can use to host any web-based application that is supported by Azure, whether it be ASP.NET Core, Node.js, Java, Python, etc.
 
 	Among other things, web app requires the following:
-	- Publish type: You can deploy your application to App Service as code or as a ready-to-run Docker image. Selecting Docker image will activate the Docker tab of the wizard, where you provide information about the Docker registry from which App Service will retrieve your image.
-	- Runtime stack: If you choose to deploy your application as code, App Service needs to know what runtime your application uses (examples include Node.js, Python, Java, and .NET). If you deploy your application as a Docker image, you will not need to choose a runtime stack, since your image will include it.
-	- Operating system: If you are deploying your app as code, many of the available runtime stacks are limited to one operating system or the other. If your application is packaged as a Docker image, choose the operating system on which your image is designed to run. Selecting Windows activates the Monitoring tab, where you have the option to enable _Application Insights_. Application Insights can be used from Linux-hosted apps as well, but this turnkey, no-code option is only available on Windows.
-	- App Service plans: An App Service plan is a set of virtual server resources that run App Service apps. A plan's size (sometimes referred to as its sku or pricing tier) determines the performance characteristics of the virtual servers that run the apps assigned to the plan and the App Service features that those apps have access to. Every App Service web app you create must be assigned to a single App Service plan that runs it. App Service plans are the unit of billing for App Service. The size of each App Service plan in your subscription, in addition to the bandwidth resources used by the apps deployed to those plans, determines the price that you pay. The number of web apps deployed to your App Service plans has no effect on your bill.
+	- _Publish type_: You can deploy your application to App Service as code or as a ready-to-run Docker image. Selecting Docker image will activate the Docker tab of the wizard, where you provide information about the Docker registry from which App Service will retrieve your image.
+	- _Runtime stack_: If you choose to deploy your application as code, App Service needs to know what runtime your application uses (examples include Node.js, Python, Java, and .NET). If you deploy your application as a Docker image, you will not need to choose a runtime stack, since your image will include it.
+	- _Operating system_: If you are deploying your app as code, many of the available runtime stacks are limited to one operating system or the other. If your application is packaged as a Docker image, choose the operating system on which your image is designed to run. Selecting Windows activates the Monitoring tab, where you have the option to enable _Application Insights_. Application Insights can be used from Linux-hosted apps as well, but this turnkey, no-code option is only available on Windows.
+	- _App Service plans_: An App Service plan is a set of virtual server resources that run App Service apps. A plan's size (sometimes referred to as its sku or pricing tier) determines the performance characteristics of the virtual servers that run the apps assigned to the plan and the App Service features that those apps have access to. Every App Service web app you create must be assigned to a single App Service plan that runs it. App Service plans are the unit of billing for App Service. The size of each App Service plan in your subscription, in addition to the bandwidth resources used by the apps deployed to those plans, determines the price that you pay. The number of web apps deployed to your App Service plans has no effect on your bill.
+
+	Commands:
+	- Deploy (it uses ZIP deploy): `az webapp up --sku F1 --name <app-name> --os-type linux` (Running it again in the same session will reuse cached values from _.azure/config_ file: `az webapp up --os-type linux`)
 
 - **_enable diagnostics logging_**
 
+	App logs are the output of runtime trace statements in app code. The types of logging available through the Azure App Service depends on the code framework of the app, and on whether the app is running on a Windows or Linux app host:
+	App environment |	Host | Log levels | Save location
+	-- | -- | -- | --
+	ASP.NET | Windows | Error, Warning, Information, Verbose | File system, Blob storage
+	ASP.NET Core | Windows | Error, Warning, Information, Verbose | File system, Blob storage
+	ASP.NET Core | Linux | Error | File system
+	Node.js | Windows | Error (STDERR), Information (STDOUT), Warning, Verbose | File system, Blob storage
+	Node.js | Linux | Error	| File system
+	Java | Linux | Error | File system
+
+	_Live log streaming_ is an easy and efficient way to view live logs for troubleshooting purposes. Live log streaming is designed to provide a quick view of all messages that are being sent to the app logs in the _file system_, without having to go through the process of locating and opening these logs. To use live logging, you connect to the live log service from the command line, and can then see text being written to the app's logs in real time.
+
+	_Alternatives to app diagnostics_. Azure Application Insights is a site extension that provides additional performance monitoring features, such as detailed usage and performance data, and is designed for production app deployments as well as being a potentially useful development tool.
+
+	All Azure Web apps have an associated Source Control Management (SCM) service site. This site runs the Kudu service, and other Site Extensions; it is Kudu that manages deployment and troubleshooting for Azure Web Apps, including options for viewing and downloading log files. One way to access the KUDU console is navigate to `https://<app name>.scm.azurewebsites.net`, and then sign in using deployment credentials.
+
+	With the _Azure Monitor integration_, you can create _Diagnostic Settings_ to send logs to _Storage Accounts_, _Event Hubs_ and _Log Analytics_.
+
+	Commands:
+	- Enable logging: `az webapp log config --application-logging true --level verbose --name <app-name> --resource-group <resource-group-name>` (there is currently no way to disable application logging by using Azure CLI commands)
+	- Open log stream: `az webapp log tail --name <app name> --resource-group <resource group name>`
+
 - **_deploy code to a web app_**
 
-	_Automated deployment_, or continuous integration, is a process used to push out new features and bug fixes in a fast and repetitive pattern with minimal impact on end users.
+	_Automated deployment_, or _continuous integration_, is a process used to push out new features and bug fixes in a fast and repetitive pattern with minimal impact on end users.
 
 	Azure supports automated deployment directly from several sources. The following options are available:
 	- Azure DevOps: You can push your code to Azure DevOps (previously known as Visual Studio Team Services), build your code in the cloud, run the tests, generate a release from the code, and finally, push your code to an Azure Web App.
@@ -143,15 +230,34 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 	There are a few options that you can use to _manually_ push your code to Azure:
 	- Git: App Service web apps feature a Git URL that you can add as a remote repository. Pushing to the remote repository will deploy your app.
-	- az webapp up: webapp up is a feature of the az command-line interface that packages your app and deploys it. Unlike other deployment methods, az webapp up can create a new App Service web app for you if you haven't already created one.
-	- ZIP deploy: Use az webapp deployment source config-zip to send a ZIP of your application files to App Service. ZIP deploy can also be accessed via basic HTTP utilities such as curl.
+	- `az webapp up`: `webapp up` is a feature of the az command-line interface that packages your app and deploys it. Unlike other deployment methods, `az webapp up` can create a new App Service web app for you if you haven't already created one.
+	- ZIP deploy: Use `az webapp deployment source config-zip` to send a ZIP of your application files to App Service. ZIP deploy can also be accessed via basic HTTP utilities such as curl.
 	- WAR deploy: It's an App Service deployment mechanism specifically designed for deploying Java web applications using WAR packages. WAR deploy can be accessed using the Kudu HTTP API located at https://<your-app-name>.scm.azurewebsites.net/api/wardeploy.
 	- Visual Studio: Visual Studio features an App Service deployment wizard that can walk you through the deployment process.
 	- FTP/S: FTP or FTPS is a traditional way of pushing your code to many hosting environments, including App Service.
 
 	Within a single Azure App Service web app, you can create multiple deployment slots. Each slot is a separate instance of that web app, and it has a separate hostname. You can deploy a different version of your web app into each slot. Deployment slots are available only when your web app uses an App Service plan in the Standard, Premium, or Isolated tier. The new slot is effectively a separate web app with a different hostname. That's why anyone on the internet can access it if they know that hostname. You can control access to a slot by using IP address restrictions. 
 
+	When provisioning and deploying high-scale applications that are composed of highly decoupled microservices, repeatability and predictability are crucial to success. _Azure App Service_ enables you to create microservices that include web apps, mobile back ends, and API apps. _Azure Resource Manager_ enables you to manage all the microservices as a unit, together with resource dependencies such as database and source control settings. Now, you can also deploy such an application using JSON templates and simple PowerShell scripting.
+
 - **_configure web app settings including SSL, API, and connection strings_**
+
+	In App Service, app settings are variables passed as environment variables to the application code. For Linux apps and custom containers, App Service passes app settings to the container using the --env flag to set the environment variable in the container. App settings and connection strings are always encrypted when stored (encrypted-at-rest).
+
+	For ASP.NET and ASP.NET Core developers, setting app settings in App Service are like setting them in <appSettings> in _Web.config_ or _appsettings.json_, but the values in App Service override the ones in _Web.config_ or _appsettings.json_. You can keep development settings (for example, local MySQL password) in _Web.config_ or _appsettings.json_ and production secrets (for example, Azure MySQL database password) safely in App Service. Same, for ASP.NET and ASP.NET Core developers, setting connection strings in App Service are like setting them in <connectionStrings> in _Web.config_, but the values you set in App Service override the ones in _Web.config_. You can keep development settings (for example, a database file) in _Web.config_ and production secrets (for example, SQL Database credentials) safely in App Service. The same code uses your development settings when you debug locally, and it uses your production secrets when deployed to Azure. For other language stacks, it's better to use _app settings_ instead, because connection strings require special formatting in the variable keys in order to access the values.
+
+	You can use the Azure CLI to create and manage settings from the command line:
+	- Create: `az webapp config appsettings set --name <app-name> --resource-group <resource-group-name> --settings <setting-name>="<value>"`
+	- Show: `az webapp config appsettings list --name <app-name> --resource-group <resource-group-name>`
+
+	The following table lists the options you have for adding certificates in App Service:
+	Option | Description
+	-- | --
+	Create a free App Service Managed Certificate (Preview) | A private certificate that's easy to use if you just need to secure your www custom domain or any non-naked domain in App Service.
+	Purchase an App Service certificate | A private certificate that's managed by Azure. It combines the simplicity of automated certificate management and the flexibility of renewal and export options.
+	Import a certificate from Key Vault | Useful if you use Azure Key Vault to manage your PKCS12 certificates. See Private certificate requirements.
+	Upload a private certificate | If you already have a private certificate from a third-party provider, you can upload it. See Private certificate requirements.
+	Upload a public certificate	| Public certificates are not used to secure custom domains, but you can load them into your code if you need them to access remote resources.
 
 - **_implement autoscaling rules, including scheduled autoscaling, and scaling by operational or system metrics_**
 
@@ -161,7 +267,20 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 	You scale an App Service plan up and down by changing the pricing tier and hardware level that it runs on. Scaling up can cause an interruption in service to client apps running at the time. Also, scaling up can cause the outgoing IP addresses for the web app to change.
 
-	??? autoscaling ???
+	Azure Monitor autoscale applies only to _Virtual Machine scale sets_, _Cloud Services_, _App Service - Web Apps_, and _API Management services_.
+
+	The following explanation applies to autoscaling:
+	- **Resource Metrics**. Resources emit metrics, these metrics are later processed by rules. Metrics come via different methods. Virtual machine scale sets use telemetry data from Azure diagnostics agents whereas telemetry for Web apps and Cloud services comes directly from the Azure Infrastructure. Some commonly used statistics include CPU Usage, memory usage, thread counts, queue length, and disk usage. For a list of what telemetry data you can use, see Autoscale Common Metrics.
+	- **Custom Metrics**. You can also leverage your own custom metrics that your application(s) may be emitting. If you have configured your application(s) to send metrics to Application Insights you can leverage those metrics to make decisions on whether to scale or not.
+	- **Time**. Schedule-based rules are based on UTC. You must set your time zone properly when setting up your rules.
+	- **Rules**. You can have many of them. You can create complex overlapping rules as needed for your situation. Rule types include
+		- Metric-based - For example, do this action when CPU usage is above 50%.
+		- Time-based - For example, trigger a webhook every 8am on Saturday in a given time zone.
+		Metric-based rules measure application load and add or remove VMs based on that load. Schedule-based rules allow you to scale when you see time patterns in your load and want to scale before a possible load increase or decrease occurs.
+	- **Actions and automation**. Rules can trigger one or more types of actions.
+		- Scale - Scale VMs in or out
+		- Email - Send email to subscription admins, co-admins, and/or additional email address you specify
+		- Automate via webhooks - Call webhooks, which can trigger multiple complex actions inside or outside Azure. Inside Azure, you can start an Azure Automation runbook, Azure Function, or Azure Logic App. Example third-party URL outside Azure include services like Slack and Twilio.
 
 ### Implement Azure functions
 
@@ -471,5 +590,10 @@ Benefits of queues: increased reliability, message delivery guarantees, transact
 	- Shared access signature - A shared access signature (SAS) is a generated URI that grants limited access to objects in your storage account to clients. You can restrict access to specific resources, permissions, and scope to a data range to automatically turn off access after a period of time.
 
 
-	Broken URLs for Thomas Maurer:
+
+# Broken URLs for Thomas Maurer:
 	- Extend Azure Resource Manager template functionality
+	- Custom configuration and application settings in Azure Web Sites (8 years old - looks goofy)
+
+# Broken tests for Pluralsight: 
+	AKS is out of scope! (from 22 IaaS questions almost half are about AKS)
