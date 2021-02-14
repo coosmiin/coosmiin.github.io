@@ -381,17 +381,141 @@ An Azure Functions app stores management information, code, and logs in Azure St
 
 - **_select the appropriate API for your solution_**
 
+	Azure Cosmos DB is a globally distributed and elastically scalable database. At the lowest level, Azure Cosmos DB stores data in atom-record-sequence (ARS) format. The data is then abstracted and projected as an API, which you specify when you are creating your database.
+
+	**Core (SQL)** is the default API for Azure Cosmos DB, which provides you with a view of your data that resembles a traditional NoSQL document store. You can query the hierarchical JSON documents with a SQL-like language. Core (SQL) uses JavaScript's type system, expression evaluation, and function invocation.
+
+	Azure Cosmos DB's **API for MongoDB** supports the MongoDB wire protocol. This API allows existing MongoDB client SDKs, drivers, and tools to interact with the data transparently, as if they are running against an actual MongoDB database. The data is stored in document format, which is the same as using Core (SQL). Azure Cosmos DB's API for MongoDB is currently compatible with 3.2 version of the MongoDB wire protocol.
+
+	Azure Cosmos DB's support for the **Cassandra API** makes it possible to query data by using the Cassandra Query Language (CQL), and your data will appear to be a partitioned row store. Just like the MongoDB API, any clients or tools should be able to connect transparently to Azure Cosmos DB; only your connection settings should need to be updated. Cosmos DB's Cassandra API currently supports version 4 of the CQL wire protocol.
+
+	Azure Cosmos DB's **Azure Table API** provides support for applications that are written for Azure Table Storage that need premium capabilities like global distribution, high availability, scalable throughput. The original Table API only allows for indexing on the Partition and Row keys; there are no secondary indexes. Storing table data in Cosmos DB automatically indexes all the properties, and requires no index management.
+
+	Choosing **Gremlin** as the API provides a graph-based view over the data. Remember that at the lowest level, all data in any Azure Cosmos DB is stored in an ARS format. A graph-based view on the database means data is either a vertex (which is an individual item in the database), or an edge (which is a relationship between items in the database). You typically use a traversal language to query a graph database, and Azure Cosmos DB supports Apache Tinkerpop's Gremlin language.
+
+	&nbsp; | Core (SQL) | MongoDB | Cassandra | Azure Table | Gremlin
+	-- | -- | -- | -- | -- | --
+	New projects being created from scratch | ✔ 				
+	Existing MongoDB, Cassandra, Azure Table, or Gremlin data | | ✔ | ✔ | ✔ | ✔
+	Analysis of the relationships between data | | | | | ✔
+	All other scenarios | ✔				
+
+	Additionally, there are a few questions that you can ask in order to help you define the scenario where the database is going to be used:
+	- Does the schema change a lot? A traditional document database is a good fit in these scenarios, making Core (SQL) a good choice.
+	- Is there important data about the relationships between items in the database? Relationships that require metadata to be stored for them are best represented in a graph database.
+	- Does the data consist of simple key-value pairs? Before Azure Cosmos DB existed, Redis or the Table API might have been a good fit for this kind of data; however, Core (SQL) API is now the better choice, as it offers a richer query experience, with improved indexing over the Table API.
+
+	Depending on which API you use, an Azure Cosmos item can represent either a document in a collection, a row in a table, or a node or edge in a graph. The following table shows the mapping of API-specific entities to an Azure Cosmos item:
+
+	Cosmos entity | SQL API | Cassandra API | Azure Cosmos DB API for MongoDB | Gremlin API	| Table API
+	-- | -- | -- | -- | -- | -- 
+	Azure Cosmos item | Item | Row | Document | Node or edge | Item
+
 - **_implement partitioning schemes_**
+
+	Azure Cosmos DB uses partitioning to scale individual containers in a database to meet the performance needs of your application. In partitioning, the items in a container are divided into distinct subsets called logical partitions. **Logical partitions** are formed based on the value of a partition key that is associated with each item in a container. All the items in a logical partition have the same partition key value.
+
+	A logical partition also defines the scope of database transactions. You can update items within a logical partition by using a transaction with snapshot isolation. When new items are added to a container, new logical partitions are transparently created by the system. There is no limit to the number of logical partitions in your container. Each logical partition can store up to 20GB of data.
+
+	A container is scaled by distributing data and throughput across **physical partitions**. Internally, one or more logical partitions are mapped to a single physical partition. Typically smaller containers have many logical partitions but they only require a single physical partition. Unlike logical partitions, physical partitions are an internal implementation of the system and they are entirely managed by Azure Cosmos DB.
+
+	If your container has a property that has a wide range of possible values, it is likely a great partition key choice. One possible example of such a property is the item ID. For small read-heavy containers or write-heavy containers of any size, the item ID is naturally a great choice for the partition key.
 
 - **_interact with data using the appropriate SDK_**
 
+	```csharp
+	// Create a new instance of the Cosmos Client
+    var cosmosClient = new CosmosClient(EndpointUri, PrimaryKey);
+	// Create a new database
+    var database = await this.cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
+	 // Create a new container
+    var container = await this.database.CreateContainerIfNotExistsAsync(containerId, "/LastName");
+	// Read the item to see if it exists.  
+    ItemResponse<Family> family = await this.container.ReadItemAsync<Family>(family.Id, new PartitionKey(family.LastName));
+	// Query data
+    var sqlQueryText = "SELECT * FROM c WHERE c.LastName = 'Andersen'";
+    QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
+    FeedIterator<Family> queryResultSetIterator = this.container.GetItemQueryIterator<Family>(queryDefinition);
+    List<Family> families = new List<Family>();
+    while (queryResultSetIterator.HasMoreResults)
+    {
+        FeedResponse<Family> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+        foreach (Family family in currentResultSet)
+        {
+			// Do stuff
+        }
+    }
+	```
+
 - **_set the appropriate consistency level for operations_**
+
+	Consistency can sometimes be an issue when you are working with distributed systems, but Azure Cosmos DB alleviates this situation by offering you five different consistency levels (from strongest to weakest): 
+	- _strong_
+	- _bounded staleness_
+	- _session_
+	- _consistent prefix_
+	- _eventual_
+	
+	The linearizability of the strong consistency model is the gold standard of data programmability. But it adds a steep price from higher write latencies due to data having to replicate and commit across large distances. Strong consistency may also suffer from reduced availability (during failures) because data cannot replicate and commit in every region. Eventual consistency offers higher availability and better performance, but its more difficult to program applications because data may not be completely consistent across all regions.
+
+	**Strong**: Strong consistency offers a linearizability guarantee. Linearizability refers to serving requests concurrently. The reads are guaranteed to return the most recent committed version of an item. A client never sees an uncommitted or partial write. Users are always guaranteed to read the latest committed write.
+
+	**Bounded staleness**: The reads are guaranteed to honor the consistent-prefix guarantee. The reads might lag behind writes by at most "K" versions (that is, "updates") of an item or by "T" time interval, whichever is reached first. In other words, when you choose bounded staleness, the "staleness" can be configured in two ways:
+	- The number of versions (K) of the item
+	- The time interval (T) reads might lag behind the writes
+
+	**Session**: Within a single client session reads are guaranteed to honor the consistent-prefix, monotonic reads, monotonic writes, read-your-writes, and write-follows-reads guarantees. This assumes a single "writer" session or sharing the session token for multiple writers.
+
+	**Consistent prefix**: Updates that are returned contain some prefix of all the updates, with no gaps. Consistent prefix consistency level guarantees that reads never see out-of-order writes.
+
+	**Eventual**: There's no ordering guarantee for reads. In the absence of any further writes, the replicas eventually converge. Eventual consistency is the weakest form of consistency because a client may read the values that are older than the ones it had read before. Eventual consistency is ideal where the application does not require any ordering guarantees.
 
 - **_create Cosmos DB containers_**
 
+	Commands:
+	- Create a Cosmos container with default index policy
+	```
+		az cosmosdb sql container create \
+			-a $accountName -g $resourceGroupName \
+			-d $databaseName -n $containerName \
+			-p $partitionKey --throughput $throughput	
+	```
+
 - **_implement scaling (partitions, containers)_**
 
+	Azure Cosmos DB uses partitioning to scale individual containers in a database to meet the performance needs of your application. In partitioning, the items in a container are divided into distinct subsets called logical partitions. Logical partitions are formed based on the value of a partition key that is associated with each item in a container. All the items in a logical partition have the same partition key value.
+
+	Selecting a partition key with a wide range of possible values ensures that the container is able to scale.	Azure Cosmos DB transparently partitions your container using the logical partition key that you specify in order to elastically scale your provisioned throughput and storage.
+
 - **_implement server-side programming including stored procedures, triggers, and change feed notifications_**
+
+	A **stored procedure** is a piece of application logic written in JavaScript that is registered and executed against a collection as a single transaction. In Azure Cosmos DB, JavaScript is hosted in the same memory space as the database. Hence, requests made within stored procedures execute in the same scope of a database session. This process enables Azure Cosmos DB to guarantee ACID for all operations that are part of a single stored procedure.
+
+	The stored procedure resource has a fixed schema. The body property contains the application logic. The following example illustrates the JSON construct of a stored procedure:
+	```
+	{    
+		"id":"SimpleStoredProc",  
+		"body":"function (docToCreate, addedPropertyName, addedPropertyValue) { getContext().getResponse().setBody('Hello World'); }",  
+		"_rid":"hLEEAI1YjgcBAAAAAAAAgA==",  
+		"_ts":1408058682,  
+		"_self":"dbs\/hLEEAA==\/colls\/hLEEAI1Yjgc=\/sprocs\/hLEEAI1YjgcBAAAAAAAAgA==\/",  
+		"_etag":"00004100-0000-0000-0000-53ed453a0000"  
+	}
+	```
+
+	Merely having _All access mode_ for a particular stored procedure does not allow the user to execute the stored procedure. Instead, the user has to have _All access mode_ at the collection level in order to execute a stored procedure.
+
+	**Triggers** are pieces of application logic that can be executed before (pre-triggers) and after (post-triggers) creation, deletion, and replacement of a document. Triggers are written in JavaScript. Both pre and post triggers do _not_ take parameters. Like stored procedures, triggers live within the confines of a collection, thus confining the application logic to the collection.
+
+	Similar to stored procedures, the triggers resource has a fixed schema. The body property contains the application logic. The following example illustrates the JSON construct of a trigger. There are two additional required parameters when creating a trigger:
+	- _triggerOperation_ - It is the type of operation that invokes the trigger. The acceptable values are: _All_, _Insert_, _Replace_ and _Delete_.
+	- _triggerType_. This specifies when the trigger is fired. The acceptable values are: _Pre_ and _Post_. Pre triggers fire before an operation while Post triggers after an operation.
+
+	**Change feed** in Azure Cosmos DB is a persistent record of changes to a container in the order they occur. Change feed support in Azure Cosmos DB works by listening to an Azure Cosmos container for any changes. It then outputs the sorted list of documents that were changed in the order in which they were modified. The persisted changes can be processed asynchronously and incrementally, and the output can be distributed across one or more consumers for parallel processing. Currently change feed doesn't log deletes. 
+	
+	The feature is supported in all Cosmos DB APIs except Table API.
+
+	Change feed items come in the order of their modification time. This sort order is guaranteed per logical partition key. While consuming the change feed in an Eventual consistency level, there could be duplicate events in-between subsequent change feed read operations (the last event of one read operation appears as the first of the next).
 
 ### Develop solutions that use blob storage
 
