@@ -772,7 +772,58 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_develop code to implement CDNs in solutions_**
 
+	Azure Content Delivery Network (CDN) is a global CDN solution for delivering high-bandwidth content. It can be hosted in Azure or any other location. With Azure CDN, you can cache static objects loaded from Azure Blob storage, a web application, or any publicly accessible web server, by using the closest point of presence (POP) server. Azure CDN can also accelerate dynamic content, which cannot be cached, by leveraging various network and routing optimizations.
+
+	Before you can create a CDN endpoint, you must have created at least one CDN profile, which can contain one or more CDN endpoints. To organize your CDN endpoints by internet domain, web application, or some other criteria, you can use multiple profiles.
+
 - **_configure cache and expiration policies for FrontDoor, CDNs, or Redis caches Store and retrieve data in Azure Redis cache_**
+
+	Front Door is a modern Content Delivery Network (CDN) with dynamic site acceleration and load balancing, it also supports caching behaviors just like any other CDN. Key features included with Front Door:
+	- Accelerated application performance by using split TCP-based anycast protocol.
+	- Intelligent health probe monitoring for backend resources.
+	- URL-path based routing for requests.
+	- Enables hosting of multiple websites for efficient application infrastructure.
+	- Cookie-based session affinity.
+	- SSL offloading and certificate management.
+	- Define your own custom domain.
+	- Application security with integrated Web Application Firewall (WAF).
+	- Redirect HTTP traffic to HTTPS with URL redirect.
+	- Custom forwarding path with URL rewrite.
+	- Native support of end-to-end IPv6 connectivity and HTTP/2 protocol.
+
+	_Azure Cache for Redis_ provides an in-memory data store based on the Redis software. Redis improves the performance and scalability of an application that uses on backend data stores heavily. It is able to process large volumes of application request by keeping frequently accessed data in the server memory that can be written to and read from quickly. Redis brings a critical low-latency and high-throughput data storage solution to modern applications.
+
+	Azure Content Delivery Network (CDN) offers two ways to control how your files are cached:
+	- _Caching rules_: You can use caching rules to set or modify default cache expiration behavior both globally and with custom conditions, such as a URL path and file extension. Azure CDN provides two types of caching rules:
+		- Global caching rules: You can set one global caching rule for each endpoint in your profile, which affects all requests to the endpoint. The global caching rule overrides any HTTP cache-directive headers, if set.
+		- Custom caching rules: You can set one or more custom caching rules for each endpoint in your profile. Custom caching rules match specific paths and file extensions, are processed in order, and override the global caching rule, if set.
+	- _Query string caching_: You can adjust how the Azure CDN treats caching for requests with query strings. If the file is not cacheable, the query string caching setting has no effect, based on caching rules and CDN default behaviors.
+
+	For global and custom caching rules, you can specify the following Caching behavior settings:
+	- _Bypass cache_: Do not cache and ignore origin-provided cache-directive headers.
+	- _Override_: Ignore origin-provided cache duration; use the provided cache duration instead. This will not override cache-control: no-cache.
+	- _Set if missing_: Honor origin-provided cache-directive headers, if they exist; otherwise, use the provided cache duration.
+
+	For global and custom caching rules, you can specify the cache expiration duration in days, hours, minutes, and seconds:
+	- For the Override and Set if missing Caching behavior settings, valid cache durations range between 0 seconds and 366 days. For a value of 0 seconds, the CDN caches the content, but must revalidate each request with the origin server.
+	- For the Bypass cache setting, the cache duration is automatically set to 0 seconds and cannot be changed.
+
+	For custom cache rules, two match conditions are available:
+	- _Path_: This condition matches the path of the URL, excluding the domain name, and supports the wildcard symbol (*). For example, /myfile.html, /my/folder/*, and /my/images/*.jpg. The maximum length is 260 characters.
+	- _Extension_: This condition matches the file extension of the requested file. You can provide a list of comma-separated file extensions to match. For example, .jpg, .mp3, or .png. The maximum number of extensions is 50 and the maximum number of characters per extension is 16.
+
+	_Azure Front Door_ delivers large files without a cap on file size. Front Door uses a technique called object chunking. When a large file is requested, Front Door retrieves smaller pieces of the file from the backend. After receiving a full or byte-range file request, the Front Door environment requests the file from the backend in chunks of 8 MB. After the chunk arrives at the Front Door environment, it's cached and immediately served to the user. Front Door then pre-fetches the next chunk in parallel. This pre-fetch ensures that the content stays one chunk ahead of the user, which reduces latency. This process continues until the entire file gets downloaded (if requested) or the client closes the connection.
+
+	_Front Door_ can dynamically compress content on the edge, resulting in a smaller and faster response time to your clients. In order for a file to be eligible for compression, caching must be enabled and the file must be of a MIME type to be eligible for compression. It support the following compression encodings: Gzip (GNU zip) and Brotli
+
+	With _Front Door_, you can control how files are cached for a web request that contains a query string:
+	- Ignore query strings: In this mode, Front Door passes the query strings from the requestor to the backend on the first request and caches the asset. All ensuing requests for the asset that are served from the Front Door environment ignore the query strings until the cached asset expires.
+	- Cache every unique URL: In this mode, each request with a unique URL, including the query string, is treated as a unique asset with its own cache.
+
+	If no Cache-Control is present, the default behavior is that _Front Door_ will cache the resource for X amount of time where X gets randomly picked between 1 to 3 days. The following order of headers is used to determine how long an item will be stored in our cache:
+	1. Cache-Control: s-maxage=<seconds>
+	2. Cache-Control: max-age=<seconds>
+	3. Expires: <http-date>
 
 ### Instrument solutions to support monitoring and logging
 
