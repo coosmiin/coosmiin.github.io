@@ -708,11 +708,63 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_secure app configuration data by using the App Configuration and KeyVault API_**
 	
+	Azure **App Configuration** provides a service to centrally manage application settings and feature flags. The easiest way to add an App Configuration store to your application is through a client library provided by Microsoft.
+
+	App Configuration offers the following benefits:
+	- A fully managed service that can be set up in minutes
+	- Flexible key representations and mappings
+	- Tagging with labels
+	- Point-in-time replay of settings
+	- Dedicated UI for feature flag management
+	- Comparison of two sets of configurations on custom-defined dimensions
+	- Enhanced security through Azure-managed identities
+	- Encryption of sensitive information at rest and in transit
+	- Native integration with popular frameworks
+
+	If you are developing a project and need to share source code securely, use **Azure Key Vault**:
+	- Create a Key Vault in your Azure subscription.
+	- Grant you and your team members access to the Key Vault. If you have a large team, you can create an Azure Active Directory group and add that security group access to the Key Vault. If you already have your web app created, grant the web app access to the Key Vault so it can access the key vault without storing secret configuration in App Settings or files.
+	- Add your secret to Key Vault on the Azure portal. For nested configuration settings, replace ':' with '--' so the Key Vault secret name is valid. ':' is not allowed to be in the name of a Key Vault secret.
+	- You can then access the secrets programatically via the `KeyVaultClient` that can be registered when the host builder is created: `builder.AddAzureKeyVault(keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());`
+
+	To work with secrets from Azure Key Vault in your App Service or Azure Functions you can use _Key Vault references_:
+	- Create a key vault.
+	- Create a system-assigned managed identity for your application.
+	- Create an access policy in Key Vault for the application identity you created earlier. Enable the "Get" secret permission on this policy.
+	- In your _Application Settings_ you can reference the KeyVault secrets: `@Microsoft.KeyVault(SecretUri=https://myvault.vault.azure.net/secrets/mysecret)`
+
 - **_manage keys, secrets, and certificates by using the KeyVault API_**
 
-	Key Vault access has two facets: the management of the Key Vault itself (_management plane_), and accessing the data contained in the Key Vault (_data plane_)
+	Azure Key Vault is a centralized cloud service for storing application secrets such as encryption keys, certificates, and server-side tokens.Key Vault resource provider supports two resource types: vaults and managed HSMs. Key Vault access has two facets: the management of the Key Vault itself (_management plane_), and accessing the data contained in the Key Vault (_data plane_).
+
+	Microsoft and your apps don't have access to the stored keys directly once a key is created or added to a key vault. Applications must use your keys by calling cryptography methods on the Key Vault service. The Key Vault service performs the requested operation within its hardened boundary. The application never has direct access to the keys. There are two variations on keys in Key Vault: hardware-protected (HSM), and software-protected.
+
+	Secrets are small (less than 10K) data blobs protected by a HSM-generated key created with the Key Vault.
+
+	Azure Key Vault manages X.509 based certificates that can come from several sources.
+	- First, you can create self-signed certificates directly in the Azure portal. This process creates a public/private key pair and signs the certificate with its own key. These certificates can be used for testing and development.
+	- Second, you can create an X.509 certificate signing request (CSR). This creates a public/private key pair in Key Vault along with a CSR you can pass over to your certification authority (CA). The signed X.509 certificate can then be merged with the held key pair to finalize the certificate in Key Vault
+	- Third, you can connect your Key Vault with a trusted certificate issuer (referred to as an integrated CA) and create the certificate directly in Azure Key Vault. This approach requires a one-time setup to connect the certificate authority.
+	- Finally, you can import existing certificates - this allows you to add certificates to Key Vault that you are already using. The imported certificate can be in either PFX or PEM format and must contain the private key.
+
+	Commands:
+	- Create vault: `New-AzKeyVault -Name <your-unique-vault-name> -ResourceGroupName <resource-group>`
+	- Create key: `$key = Add-AzureKeyVaultKey -VaultName 'contoso' -Name 'MyFirstKey' -Destination 'HSM'`
 
 - **_implement Managed Identities for Azure resources_**
+
+	On Azure, managed identities eliminate the need for developers having to manage credentials by providing an identity for the Azure resource in Azure AD and using it to obtain Azure Active Directory (Azure AD) tokens. This also helps accessing Azure Key Vault where developers can store credentials in a secure manner. Managed identities for Azure resources solves this problem by providing Azure services with an automatically managed identity in Azure AD.
+
+	Benefits of using Managed identities:
+	- You don't need to manage credentials. Credentials are not even accessible to you.
+	- You can use managed identities to authenticate to any Azure service that supports Azure AD authentication including Azure Key Vault.
+	- Managed identities can be used without any additional cost.
+
+	There are two types of managed identities:
+	- _System-assigned_. Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that is tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.
+	- _User-assigned_. You may also create a managed identity as a standalone Azure resource. You can create a user-assigned managed identity and assign it to one or more instances of an Azure service. In the case of user-assigned managed identities, the identity is managed separately from the resources that use it.
+
+	Regardless of the type of identity chosen a managed identity is a service principal of a special type that may only be used with Azure resources.
 
 ## Monitor, troubleshoot, and optimize Azure solutions (10-15%)
 
