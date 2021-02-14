@@ -35,7 +35,7 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 - **_configure VMs for remote access_**
 
-	_Secure Shell (SSH)_ is an encrypted connection protocol that allows secure sign-ins over unsecured connections. SSH allows you to connect to a terminal shell from a remote location using a network connection. There are two approaches we can use to authenticate an SSH connection: username and password, or an SSH key pair.
+	_Secure Shell (SSH)_ is an encrypted connection protocol that allows secure sign-ins over unsecured connections. SSH allows you to connect to a terminal shell from a remote location using a network connection. There are two approaches we can use to authenticate an SSH connection: username and password, or an SSH key pair. VMs created using SSH keys are by default configured with passwords disabled, which greatly increases the difficulty of brute-force guessing attacks.
 
 	There are two parts to an SSH key pair: a public key and a private key.
 	- The public key is placed on your Linux VM or any other service that you wish to use with public-key cryptography. This can be shared with anyone.
