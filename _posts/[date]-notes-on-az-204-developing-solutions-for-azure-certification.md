@@ -529,23 +529,129 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_move items in Blob storage between storage accounts or containers_**
 
-???
+	Azure doesn't include any process to move blobs. To perform a move, you'll first copy the data and then delete the source data. Azure does provide several tools you can use to copy blobs to a destination:
+	- Azure CLI
+	- AzCopy utility
+	- .NET Storage Client library
+
+	The **Azure CLI** provides access to Azure Storage through the az storage series of commands. The basic commands to upload and download blobs between blob storage and the local file system are _synchronous_. You transfer blobs between containers and storage accounts using the `az storage blob copy` command. Unlike the upload and download operations, this command runs _asynchronously_ and uses the Azure Storage service to manage the copy process. This command also supports a batch mode that enables you to copy multiple blobs.
+
+	Commands:
+	- Move
+	```
+		az storage blob copy start \
+			--destination-container destContainer \
+			--destination-blob myBlob \
+			--source-account-name mySourceAccount \
+			--source-account-key mySourceAccountKey \
+			--source-container myContainer \
+			--source-blob myBlob	
+	```
+	- Check status:
+	```
+		az storage blob show \
+			--container-name destContainer \
+			--name myBlob
+	```
+
+	The **AzCopy utility** was written specifically for transferring data into, out of, and between Azure Storage accounts. A key strength of AzCopy over the Azure CLI is that all operations run asynchronously, and they're recoverable. 
+
+	As with the Azure CLI, AzCopy makes use of the Azure Storage service to transfer blobs between storage accounts. The AzCopy command lacks the ability to select blobs based on their modification dates. However, AzCopy does provide comprehensive support for hierarchical containers and blob selection by pattern matching (two features not available with the Azure CLI).
+
+	You can control the performance and resource utilization of the AzCopy command by setting the AZCOPY_CONCURRENCY_VALUE environment variable. AzCopy uses the value of this variable to specify the number of concurrent threads it will use for transferring data. By default, it's set to 300.
+
+	Commands:
+	- Move: `azcopy copy "https://sourceaccount.blob.core.windows.net/sourcecontainer/*?<source sas token>" "https://destaccount.blob.core.windows.net/destcontainer/*?<dest sas token>"`
+	- 
+
+	The **.NET Storage Client library** is a collection of objects and methods that you can use to build custom applications that manipulate items held in Azure Storage. 
+
+	Code:
+	```csharp
+		CloudBlockBlob destBlob = destContainer.GetBlockBlobReference(sourceBlob.Name);
+		await destBlob.StartCopyAsync(new Uri(GetSharedAccessUri(sourceBlob.Name, sourceContainer)));
+	```
+
+	The StartCopyAsync method initiates the blob copy operation and the process runs in the background. You can check on the progress of the operation by retrieving a reference to the destination blob, and querying its CopyState. 
 
 - **_set and retrieve properties and metadata_**
 
-???
+	Blob containers support system properties and user-defined metadata, in addition to the data they contain:
+	- **System properties**: System properties exist on each Blob storage resource. Some of them can be read or set, while others are read-only. Under the covers, some system properties correspond to certain standard HTTP headers. The Azure Storage client library for .NET maintains these properties for you.
+	- **User-defined metadata**: User-defined metadata consists of one or more name-value pairs that you specify for a Blob storage resource. You can use metadata to store additional values with the resource. Metadata values are for your own purposes only, and do not affect how the resource behaves.
+
+	Metadata name/value pairs are valid HTTP headers, and so should adhere to all restrictions governing HTTP headers. Metadata names must be valid HTTP header names and valid C# identifiers, may contain only ASCII characters, and should be treated as case-insensitive. Metadata values containing non-ASCII characters should be Base64-encoded or URL-encoded.
+
+	Code:
+	```csharp
+		// Fetch some container properties and write out their values.
+		var properties = await container.GetPropertiesAsync();
+		Console.WriteLine($"Properties for container {container.Uri}");
+		Console.WriteLine($"Public access level: {properties.Value.PublicAccess}");
+		Console.WriteLine($"Last modified time in UTC: {properties.Value.LastModified}");
+
+		var metadata = new Dictionary<string, string>();
+
+		// Add some metadata to the container.
+		metadata.Add("docType", "textDocuments");
+		metadata.Add("category", "guidance");
+
+		// Set the container's metadata.
+		await container.SetMetadataAsync(metadata);
+
+        // Enumerate the container's metadata.
+        Console.WriteLine("Container metadata:");
+        foreach (var metadataItem in properties.Value.Metadata)
+        {
+            Console.WriteLine($"\tKey: {metadataItem.Key}");
+            Console.WriteLine($"\tValue: {metadataItem.Value}");
+		}		
+	```
 
 - **_interact with data using the appropriate SDK_**
 
-??? - maybe read the exercises again
+	Use the Azure Blob Storage [client library v12 for .NET](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-dotnet) to:
+	- Create a container
+	- Upload a blob to Azure Storage
+	- List all of the blobs in a container
+	- Download the blob to your local computer
+	- Delete a container
 
 - **_implement data archiving and retention_**
 
-???
+	Immutable storage for Azure Blob storage enables users to store business-critical data objects in a WORM (Write Once, Read Many) state. This state makes the data non-erasable and non-modifiable for a user-specified interval. For the duration of the retention interval, blobs can be created and read, but cannot be modified or deleted. Immutable storage is available for general-purpose v1, general-purpose v2, BlobStorage, and BlockBlobStorage accounts in all Azure regions.
+
+	Immutable storage supports the following features:
+	- _Time-based retention policy support_: Users can set policies to store data for a specified interval. After the retention period has expired, blobs can be deleted but not overwritten.
+	- _Legal hold policy support_: If the retention interval is not known, users can set legal holds to store immutable data until the legal hold is cleared. Each legal hold is associated with a user-defined alphanumeric tag (such as a case ID, event name, etc.) that is used as an identifier string.
+	- _Support for all blob tiers_: WORM policies are independent of the Azure Blob storage tier and apply to all the tiers: hot, cool, and archive. 
+	- _Container-level configuration_: Users can configure time-based retention policies and legal hold tags at the container level. By using simple container-level settings, users can create and lock time-based retention policies, extend retention intervals, set and clear legal holds, and more. These policies apply to all the blobs in the container, both existing and new.
+	- _Audit logging support_: Each container includes a policy audit log. It shows up to seven time-based retention commands for locked time-based retention policies and contains the user ID, command type, time stamps, and retention interval.
 
 - **_implement hot, cool, and archive storage_**
 
-???
+	Azure storage offers different access tiers, allowing you to store blob object data in the most cost-effective manner. Available access tiers include:
+	- **Hot** - Optimized for storing data that is accessed frequently.
+	- **Cool** - Optimized for storing data that is infrequently accessed and stored for at least 30 days.
+	- **Archive** - Optimized for storing data that is rarely accessed and stored for at least 180 days with flexible latency requirements, on the order of hours.
+
+	The following considerations apply to the different access tiers:
+	- The access tier can be set on a blob during or after upload.
+	- Only the hot and cool access tiers can be set at the account level. The archive access tier can only be set at the blob level.
+	- Data in the cool access tier has slightly lower availability, but still has high durability, retrieval latency, and throughput characteristics similar to hot data. For cool data, slightly lower availability and higher access costs are acceptable trade-offs for lower overall storage costs compared to hot data. For more information, see SLA for storage.
+	- Data in the archive access tier is stored offline. The archive tier offers the lowest storage costs but also the highest access costs and latency.
+	- The hot and cool tiers support all redundancy options. The archive tier supports only LRS, GRS, and RA-GRS.
+	- Data storage limits are set at the account level and not per access tier. You can choose to use all of your limit in one tier or across all three tiers.
+	
+	Object storage data tiering between hot, cool, and archive is supported in Blob Storage and General Purpose v2 (GPv2) accounts. General Purpose v1 (GPv1) accounts don't support tiering.
+
+	_Account-level tiering_. Blobs in all three access tiers can coexist within the same account. Any blob that doesn't have an explicitly assigned tier infers the tier from the account access tier setting.
+
+	_Blob-level tiering_. Blob-level tiering allows you to upload data to the access tier of your choice using the _Put Blob_ or _Put Block List_ operations and change the tier of your data at the object level using the _Set Blob Tier_ operation or lifecycle management feature. 
+
+	While a blob is in the archive access tier, it's considered offline and can't be read or modified. The blob metadata remains online and available, allowing you to list the blob and its properties. Reading and modifying blob data is only available with online tiers such as hot or cool. There are two options to retrieve and access data stored in the archive access tier:
+	- Rehydrate an archived blob to an online tier - Rehydrate an archive blob to hot or cool by changing its tier using the _Set Blob Tier_ operation.
+	- Copy an archived blob to an online tier - Create a new copy of an archive blob by using the _Copy Blob_ operation. Specify a different blob name and a destination tier of hot or cool.
 
 ## Implement Azure security (15-20%)
 
