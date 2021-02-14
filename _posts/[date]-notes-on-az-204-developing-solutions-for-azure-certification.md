@@ -485,7 +485,7 @@ An Azure Functions app stores management information, code, and logs in Azure St
 
 	Azure Cosmos DB uses partitioning to scale individual containers in a database to meet the performance needs of your application. In partitioning, the items in a container are divided into distinct subsets called logical partitions. Logical partitions are formed based on the value of a partition key that is associated with each item in a container. All the items in a logical partition have the same partition key value.
 
-	Selecting a partition key with a wide range of possible values ensures that the container is able to scale.	Azure Cosmos DB transparently partitions your container using the logical partition key that you specify in order to elastically scale your provisioned throughput and storage.
+	Selecting a partition key with a wide range of possible values ensures that the container is able to scale.	Azure Cosmos DB transparently partitions your container using the logical partition key that you specify in order to elastically scale your provisioned throughput and storage. All containers created inside a database with a provisioned throughput must be created with a partition key.
 
 - **_implement server-side programming including stored procedures, triggers, and change feed notifications_**
 
