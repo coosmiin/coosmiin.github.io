@@ -52,27 +52,235 @@ Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-no
 
 	_Remote Desktop (RDP)_ provides remote connectivity to the UI of Windows-based computers. Microsoft provides RDP clients for the following operating systems: Windows (built-in), macOS, iOS and Android. There are also open-source Linux clients, such as Remmina that enable you to connect to a Windows PC from an Ubuntu distribution.
 
+	You can secure your management ports with _just-in-time access_. You can lock down inbound traffic to your Azure Virtual Machines with Azure Security Center's just-in-time (JIT) virtual machine (VM) access feature. You can request access to a JIT-enabled VM from Security Center, Azure virtual machines, PowerShell, or the REST API.
+
 - **_create ARM templates_**
 
 	Resource Manager templates are JSON files that define the resources you need to deploy for your solution. Create resource templates from the Automation section for a specific VM by selecting the Export template option. 
 
+	Advantages:
+	- Declarative syntax
+	- Repeatable results
+	- Orchestration: You don't have to worry about the complexities of ordering operations. Resource Manager orchestrates the deployment of interdependent resources so they're created in the correct order. When possible, Resource Manager deploys resources in parallel so your deployments finish faster than serial deployments.
+	- Modular files: You can break your templates into smaller, reusable components and link them together at deployment time.
+	- Extensibility: With deployment scripts, you can add PowerShell or Bash scripts to your templates.
+	Testing: You can make sure your template follows recommended guidelines by testing it with the ARM template tool kit (arm-ttk). This test kit is a PowerShell script that you can download from GitHub.
+	- Preview changes: You can use the what-if operation to get a preview of changes before deploying the template. With what-if, you see which resources will be created, updated, or deleted, and any resource properties that will be changed. The what-if operation checks the current state of your environment and eliminates the need to manage state.
+	- Built-in validation: Your template is deployed only after passing validation.
+	- Tracked deployments: In the Azure portal, you can review the deployment history and get information about the template deployment. You can see the template that was deployed, the parameter values passed in, and any output values.
+	- Policy as code: Azure Policy is a policy as code framework to automate governance. If you're using Azure policies, policy remediation is done on non-compliant resources when deployed through templates.
+	- Deployment Blueprints: You can take advantage of Blueprints provided by Microsoft to meet regulatory and compliance standards. These blueprints include pre-built templates for various architectures.
+	- CI/CD integration
+	- Exportable code: You can get a template for an existing resource group by either exporting the current state of the resource group, or viewing the template used for a particular deployment.
+	- Authoring tools
+
+	The template has the following sections:
+	- Parameters - Provide values during deployment that allow the same template to be used with different environments.
+	- Variables - Define values that are reused in your templates. They can be constructed from parameter values.
+	- User-defined functions - Create customized functions that simplify your template.
+	- Resources - Specify the resources to deploy.
+	- Outputs - Return values from the deployed resources.
+
+	Example: to deploy a VM (in a new virtual network with a single subnet) using ARM template with C# you need the following files:
+	- CreateVMTemplate.json
+	- Parameters.json
+	- azureauth.properties
+
+	After creating your template, you may wish to share it with other users in your organization. Template specs enable you to store a template as a resource type.
+
+	Commands:
+	- PowerShell: `New-AzResourceGroupDeployment -Name myDeploymentName -ResourceGroupName myResourceGroup -TemplateFile $templateFile`
+	- CLI: `az deployment group create --name myDeploymentName --resource-group myResourceGroup --template-file $templateFile`
+
 - **_create container images for solutions by using Docker_**
+
+	How to:
+	- Use the docker build command to create the container image and tag it: `docker build ./aci-helloworld -t aci-tutorial-app`
+	- Before you deploy the container to Azure Container Instances, use docker run to run it locally and confirm that it works. The -d switch lets the container run in the background, while -p allows you to map an arbitrary port on your computer to port 80 in the container: `docker run -d -p 8080:80 aci-tutorial-app`
 
 - **_publish an image to the Azure Container Registry_**
 
+	Container Registry is an Azure service that you can use to create your own private Docker registries. Like Docker Hub, Container Registry is organized around repositories that contain one or more images. Container Registry also lets you automate tasks such as redeploying an app when an image is rebuilt.
+
+	Security is an important reason to choose Container Registry instead of Docker Hub:
+	- You have much more control over who can see and use your images.
+	- You can sign images to increase trust and reduce the chances of an image becoming accidentally (or intentionally) corrupted or otherwise infected.
+	- All images stored in a container registry are encrypted at rest.
+	- Container Registry runs in Azure. The registry can be replicated to store images near where they're likely to be deployed.
+	- Container Registry is highly scalable, providing enhanced throughput for Docker pulls that can span many nodes concurrently. The Premium SKU of Container Registry includes 500 GiB of storage.
+
+	You create a registry by using either the Azure portal or the Azure CLI `acr create` command. In addition to storing and hosting images, you can also use Container Registry to build images. Instead of building an image yourself and pushing it to Container Registry, use the CLI to upload the Docker file and other files that make up your image. Container Registry will then build the image for you. Use the `acr build` command to run a build.
+
+	You use the _tasks_ feature of Container Registry to rebuild your image whenever its source code changes automatically. You configure a Container Registry task to monitor the GitHub repository that contains your code and trigger a build each time it changes. Container Registry tasks must be created from the command line. Example: this command is making use of _ACR tasks_ to run `docker build` in the cloud: `az acr build --registry $ACR_NAME --image helloacrtasks:v1 .`
+
 - **_run containers by using Azure Container Instance_**
+
+	Azure Container Instances is useful for scenarios that can operate in isolated containers, including simple applications, task automation, and build jobs. Here are some of the benefits:
+	- Fast startup: Launch containers in seconds.
+	- Per second billing: Incur costs only while the container is running.
+	- Hypervisor-level security: Isolate your application as completely as it would be in a VM.
+	- Custom sizes: Specify exact values for CPU cores and memory.
+	- Persistent storage: Mount Azure Files shares directly to a container to retrieve and persist state.
+	- Linux and Windows: Schedule both Windows and Linux containers using the same API.	
+
+	Azure Container Instances enables exposing your container groups directly to the internet with an IP address and a fully qualified domain name (FQDN). When you create a container instance, you can specify a custom DNS name label so your application is reachable at customlabel.azureregion.azurecontainer.io.
+	
+	Azure Container Instances has three restart-policy options:
+	- Always: Containers in the container group are always restarted. This policy makes sense for long-running tasks such as a web server. This is the default setting applied when no restart policy is specified at container creation.
+	- Never: Containers in the container group are never restarted. The containers run one time only.
+	- OnFailure: Containers in the container group are restarted only when the process executed in the container fails (when it terminates with a nonzero exit code). The containers are run at least once. This policy works well for containers that run short-lived tasks.	
+
+	By default, Azure Container Instances are stateless. If the container crashes or stops, all of its state is lost. To persist state beyond the lifetime of the container, you must mount a volume from an external store. To mount an Azure file share as a volume in Azure Container Instances, you need these three values:
+	- The storage account name
+	- The share name
+	- The storage account access key
+
+	Commands:
+	- Create container: 
+	```
+		az container create \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer \
+			--image microsoft/aci-helloworld \
+			--ports 80 \
+			--dns-name-label $DNS_NAME_LABEL \
+			--location eastus
+			--environment-variables \
+				DB_ENDPOINT=$DB_ENDPOINT \
+				DB_MASTERKEY=$DB_MASTERKEY
+	```
+	(To use secure environment variables, you use the --secure-environment-variables argument instead of the --environment-variables argument)
+	- Get logs:
+	```
+		az container logs \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer
+	```
+	- Get container events (attach). The `az container attach` command shows container events and logs. By contrast, the `az container logs` only shows the logs and not the startup events.
+	```
+		az container attach \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer
+	```
+	- Execute commands in container:
+	```
+		az container exec \
+			--resource-group learn-deploy-aci-rg \
+			--name mycontainer \
+			--exec-command /bin/sh
+	```
 
 ### Create Azure App Service Web Apps
 
 - **_create an Azure App Service Web App_**
 
+	**Azure App Service** is a fully managed web application hosting platform. This platform as a service (PaaS) offered by Azure allows you to focus on designing and building your app while Azure takes care of the infrastructure to run and scale your applications.
+
+	Using the Azure portal, you can easily add deployment slots to an App Service web app. For instance, you can create a staging deployment slot where you can push your code to test on Azure. Once you are happy with your code, you can easily swap the staging deployment slot with the production slot.
+
+	The Azure portal provides out-of-the-box continuous integration and deployment with Azure DevOps, GitHub, Bitbucket, FTP, or a local Git repository on your development machine. Connect your web app with any of the above sources and App Service will do the rest for you by automatically syncing your code and any future changes on the code into the web app.
+
+	Baked into the web app is the ability to scale up/down or scale out. Depending on the usage of the web app, you can scale your app up/down by increasing/decreasing the resources of the underlying machine that is hosting your web app. Resources can be number of cores or the amount of RAM available.
+
+	Creating a web app allocates a set of hosting resources in App Service, which you can use to host any web-based application that is supported by Azure, whether it be ASP.NET Core, Node.js, Java, Python, etc.
+
+	Among other things, web app requires the following:
+	- _Publish type_: You can deploy your application to App Service as code or as a ready-to-run Docker image. Selecting Docker image will activate the Docker tab of the wizard, where you provide information about the Docker registry from which App Service will retrieve your image.
+	- _Runtime stack_: If you choose to deploy your application as code, App Service needs to know what runtime your application uses (examples include Node.js, Python, Java, and .NET). If you deploy your application as a Docker image, you will not need to choose a runtime stack, since your image will include it.
+	- _Operating system_: If you are deploying your app as code, many of the available runtime stacks are limited to one operating system or the other. If your application is packaged as a Docker image, choose the operating system on which your image is designed to run. Selecting Windows activates the Monitoring tab, where you have the option to enable _Application Insights_. Application Insights can be used from Linux-hosted apps as well, but this turnkey, no-code option is only available on Windows.
+	- _App Service plans_: An App Service plan is a set of virtual server resources that run App Service apps. A plan's size (sometimes referred to as its sku or pricing tier) determines the performance characteristics of the virtual servers that run the apps assigned to the plan and the App Service features that those apps have access to. Every App Service web app you create must be assigned to a single App Service plan that runs it. App Service plans are the unit of billing for App Service. The size of each App Service plan in your subscription, in addition to the bandwidth resources used by the apps deployed to those plans, determines the price that you pay. The number of web apps deployed to your App Service plans has no effect on your bill.
+
+	Commands:
+	- Deploy (it uses ZIP deploy): `az webapp up --sku F1 --name <app-name> --os-type linux` (Running it again in the same session will reuse cached values from _.azure/config_ file: `az webapp up --os-type linux`)
+
 - **_enable diagnostics logging_**
+
+	App logs are the output of runtime trace statements in app code. The types of logging available through the Azure App Service depends on the code framework of the app, and on whether the app is running on a Windows or Linux app host:
+	App environment |	Host | Log levels | Save location
+	-- | -- | -- | --
+	ASP.NET | Windows | Error, Warning, Information, Verbose | File system, Blob storage
+	ASP.NET Core | Windows | Error, Warning, Information, Verbose | File system, Blob storage
+	ASP.NET Core | Linux | Error | File system
+	Node.js | Windows | Error (STDERR), Information (STDOUT), Warning, Verbose | File system, Blob storage
+	Node.js | Linux | Error	| File system
+	Java | Linux | Error | File system
+
+	_Live log streaming_ is an easy and efficient way to view live logs for troubleshooting purposes. Live log streaming is designed to provide a quick view of all messages that are being sent to the app logs in the _file system_, without having to go through the process of locating and opening these logs. To use live logging, you connect to the live log service from the command line, and can then see text being written to the app's logs in real time.
+
+	_Alternatives to app diagnostics_. Azure Application Insights is a site extension that provides additional performance monitoring features, such as detailed usage and performance data, and is designed for production app deployments as well as being a potentially useful development tool.
+
+	All Azure Web apps have an associated Source Control Management (SCM) service site. This site runs the Kudu service, and other Site Extensions; it is Kudu that manages deployment and troubleshooting for Azure Web Apps, including options for viewing and downloading log files. One way to access the KUDU console is navigate to `https://<app name>.scm.azurewebsites.net`, and then sign in using deployment credentials.
+
+	With the _Azure Monitor integration_, you can create _Diagnostic Settings_ to send logs to _Storage Accounts_, _Event Hubs_ and _Log Analytics_.
+
+	Commands:
+	- Enable logging: `az webapp log config --application-logging true --level verbose --name <app-name> --resource-group <resource-group-name>` (there is currently no way to disable application logging by using Azure CLI commands)
+	- Open log stream: `az webapp log tail --name <app name> --resource-group <resource group name>`
 
 - **_deploy code to a web app_**
 
+	_Automated deployment_, or _continuous integration_, is a process used to push out new features and bug fixes in a fast and repetitive pattern with minimal impact on end users.
+
+	Azure supports automated deployment directly from several sources. The following options are available:
+	- Azure DevOps: You can push your code to Azure DevOps (previously known as Visual Studio Team Services), build your code in the cloud, run the tests, generate a release from the code, and finally, push your code to an Azure Web App.
+	- GitHub: Azure supports automated deployment directly from GitHub. When you connect your GitHub repository to Azure for automated deployment, any changes you push to your production branch on GitHub will be automatically deployed for you.
+	- Bitbucket: With its similarities to GitHub, you can configure an automated deployment with Bitbucket.
+	- OneDrive: Microsoft's cloud-based storage. You must have a Microsoft Account linked to a OneDrive account to deploy to Azure.
+	- Dropbox: Azure supports deployment from Dropbox, which is a popular cloud-based storage system that is similar to OneDrive.
+
+	There are a few options that you can use to _manually_ push your code to Azure:
+	- Git: App Service web apps feature a Git URL that you can add as a remote repository. Pushing to the remote repository will deploy your app.
+	- `az webapp up`: `webapp up` is a feature of the az command-line interface that packages your app and deploys it. Unlike other deployment methods, `az webapp up` can create a new App Service web app for you if you haven't already created one.
+	- ZIP deploy: Use `az webapp deployment source config-zip` to send a ZIP of your application files to App Service. ZIP deploy can also be accessed via basic HTTP utilities such as curl.
+	- WAR deploy: It's an App Service deployment mechanism specifically designed for deploying Java web applications using WAR packages. WAR deploy can be accessed using the Kudu HTTP API located at https://<your-app-name>.scm.azurewebsites.net/api/wardeploy.
+	- Visual Studio: Visual Studio features an App Service deployment wizard that can walk you through the deployment process.
+	- FTP/S: FTP or FTPS is a traditional way of pushing your code to many hosting environments, including App Service.
+
+	Within a single Azure App Service web app, you can create multiple deployment slots. Each slot is a separate instance of that web app, and it has a separate hostname. You can deploy a different version of your web app into each slot. Deployment slots are available only when your web app uses an App Service plan in the Standard, Premium, or Isolated tier. The new slot is effectively a separate web app with a different hostname. That's why anyone on the internet can access it if they know that hostname. You can control access to a slot by using IP address restrictions. 
+
+	When provisioning and deploying high-scale applications that are composed of highly decoupled microservices, repeatability and predictability are crucial to success. _Azure App Service_ enables you to create microservices that include web apps, mobile back ends, and API apps. _Azure Resource Manager_ enables you to manage all the microservices as a unit, together with resource dependencies such as database and source control settings. Now, you can also deploy such an application using JSON templates and simple PowerShell scripting.
+
 - **_configure web app settings including SSL, API, and connection strings_**
 
+	In App Service, app settings are variables passed as environment variables to the application code. For Linux apps and custom containers, App Service passes app settings to the container using the --env flag to set the environment variable in the container. App settings and connection strings are always encrypted when stored (encrypted-at-rest).
+
+	For ASP.NET and ASP.NET Core developers, setting app settings in App Service are like setting them in <appSettings> in _Web.config_ or _appsettings.json_, but the values in App Service override the ones in _Web.config_ or _appsettings.json_. You can keep development settings (for example, local MySQL password) in _Web.config_ or _appsettings.json_ and production secrets (for example, Azure MySQL database password) safely in App Service. Same, for ASP.NET and ASP.NET Core developers, setting connection strings in App Service are like setting them in <connectionStrings> in _Web.config_, but the values you set in App Service override the ones in _Web.config_. You can keep development settings (for example, a database file) in _Web.config_ and production secrets (for example, SQL Database credentials) safely in App Service. The same code uses your development settings when you debug locally, and it uses your production secrets when deployed to Azure. For other language stacks, it's better to use _app settings_ instead, because connection strings require special formatting in the variable keys in order to access the values.
+
+	You can use the Azure CLI to create and manage settings from the command line:
+	- Create: `az webapp config appsettings set --name <app-name> --resource-group <resource-group-name> --settings <setting-name>="<value>"`
+	- Show: `az webapp config appsettings list --name <app-name> --resource-group <resource-group-name>`
+
+	The following table lists the options you have for adding certificates in App Service:
+	Option | Description
+	-- | --
+	Create a free App Service Managed Certificate (Preview) | A private certificate that's easy to use if you just need to secure your www custom domain or any non-naked domain in App Service.
+	Purchase an App Service certificate | A private certificate that's managed by Azure. It combines the simplicity of automated certificate management and the flexibility of renewal and export options.
+	Import a certificate from Key Vault | Useful if you use Azure Key Vault to manage your PKCS12 certificates. See Private certificate requirements.
+	Upload a private certificate | If you already have a private certificate from a third-party provider, you can upload it. See Private certificate requirements.
+	Upload a public certificate	| Public certificates are not used to secure custom domains, but you can load them into your code if you need them to access remote resources.
+
 - **_implement autoscaling rules, including scheduled autoscaling, and scaling by operational or system metrics_**
+
+	When you create a web app, you can either create a new App Service plan or use an existing one. If you select an existing plan, any other web apps that use the same plan will share resources with your web app. They'll all scale together, so they need to have the same scaling requirements. If your apps have different requirements, use a separate App Service plan for each one.
+
+	You scale out by adding more instances to an App Service plan, up to the limit available for your selected tier.
+
+	You scale an App Service plan up and down by changing the pricing tier and hardware level that it runs on. Scaling up can cause an interruption in service to client apps running at the time. Also, scaling up can cause the outgoing IP addresses for the web app to change.
+
+	Azure Monitor autoscale applies only to _Virtual Machine scale sets_, _Cloud Services_, _App Service - Web Apps_, and _API Management services_.
+
+	The following explanation applies to autoscaling:
+	- **Resource Metrics**. Resources emit metrics, these metrics are later processed by rules. Metrics come via different methods. Virtual machine scale sets use telemetry data from Azure diagnostics agents whereas telemetry for Web apps and Cloud services comes directly from the Azure Infrastructure. Some commonly used statistics include CPU Usage, memory usage, thread counts, queue length, and disk usage. For a list of what telemetry data you can use, see Autoscale Common Metrics.
+	- **Custom Metrics**. You can also leverage your own custom metrics that your application(s) may be emitting. If you have configured your application(s) to send metrics to Application Insights you can leverage those metrics to make decisions on whether to scale or not.
+	- **Time**. Schedule-based rules are based on UTC. You must set your time zone properly when setting up your rules.
+	- **Rules**. You can have many of them. You can create complex overlapping rules as needed for your situation. Rule types include
+		- Metric-based - For example, do this action when CPU usage is above 50%.
+		- Time-based - For example, trigger a webhook every 8am on Saturday in a given time zone.
+		Metric-based rules measure application load and add or remove VMs based on that load. Schedule-based rules allow you to scale when you see time patterns in your load and want to scale before a possible load increase or decrease occurs.
+	- **Actions and automation**. Rules can trigger one or more types of actions.
+		- Scale - Scale VMs in or out
+		- Email - Send email to subscription admins, co-admins, and/or additional email address you specify
+		- Automate via webhooks - Call webhooks, which can trigger multiple complex actions inside or outside Azure. Inside Azure, you can start an Azure Automation runbook, Azure Function, or Azure Logic App. Example third-party URL outside Azure include services like Slack and Twilio.
 
 ### Implement Azure functions
 
@@ -173,17 +381,141 @@ An Azure Functions app stores management information, code, and logs in Azure St
 
 - **_select the appropriate API for your solution_**
 
+	Azure Cosmos DB is a globally distributed and elastically scalable database. At the lowest level, Azure Cosmos DB stores data in atom-record-sequence (ARS) format. The data is then abstracted and projected as an API, which you specify when you are creating your database.
+
+	**Core (SQL)** is the default API for Azure Cosmos DB, which provides you with a view of your data that resembles a traditional NoSQL document store. You can query the hierarchical JSON documents with a SQL-like language. Core (SQL) uses JavaScript's type system, expression evaluation, and function invocation.
+
+	Azure Cosmos DB's **API for MongoDB** supports the MongoDB wire protocol. This API allows existing MongoDB client SDKs, drivers, and tools to interact with the data transparently, as if they are running against an actual MongoDB database. The data is stored in document format, which is the same as using Core (SQL). Azure Cosmos DB's API for MongoDB is currently compatible with 3.2 version of the MongoDB wire protocol.
+
+	Azure Cosmos DB's support for the **Cassandra API** makes it possible to query data by using the Cassandra Query Language (CQL), and your data will appear to be a partitioned row store. Just like the MongoDB API, any clients or tools should be able to connect transparently to Azure Cosmos DB; only your connection settings should need to be updated. Cosmos DB's Cassandra API currently supports version 4 of the CQL wire protocol.
+
+	Azure Cosmos DB's **Azure Table API** provides support for applications that are written for Azure Table Storage that need premium capabilities like global distribution, high availability, scalable throughput. The original Table API only allows for indexing on the Partition and Row keys; there are no secondary indexes. Storing table data in Cosmos DB automatically indexes all the properties, and requires no index management.
+
+	Choosing **Gremlin** as the API provides a graph-based view over the data. Remember that at the lowest level, all data in any Azure Cosmos DB is stored in an ARS format. A graph-based view on the database means data is either a vertex (which is an individual item in the database), or an edge (which is a relationship between items in the database). You typically use a traversal language to query a graph database, and Azure Cosmos DB supports Apache Tinkerpop's Gremlin language.
+
+	&nbsp; | Core (SQL) | MongoDB | Cassandra | Azure Table | Gremlin
+	-- | -- | -- | -- | -- | --
+	New projects being created from scratch | ✔ 				
+	Existing MongoDB, Cassandra, Azure Table, or Gremlin data | | ✔ | ✔ | ✔ | ✔
+	Analysis of the relationships between data | | | | | ✔
+	All other scenarios | ✔				
+
+	Additionally, there are a few questions that you can ask in order to help you define the scenario where the database is going to be used:
+	- Does the schema change a lot? A traditional document database is a good fit in these scenarios, making Core (SQL) a good choice.
+	- Is there important data about the relationships between items in the database? Relationships that require metadata to be stored for them are best represented in a graph database.
+	- Does the data consist of simple key-value pairs? Before Azure Cosmos DB existed, Redis or the Table API might have been a good fit for this kind of data; however, Core (SQL) API is now the better choice, as it offers a richer query experience, with improved indexing over the Table API.
+
+	Depending on which API you use, an Azure Cosmos item can represent either a document in a collection, a row in a table, or a node or edge in a graph. The following table shows the mapping of API-specific entities to an Azure Cosmos item:
+
+	Cosmos entity | SQL API | Cassandra API | Azure Cosmos DB API for MongoDB | Gremlin API	| Table API
+	-- | -- | -- | -- | -- | -- 
+	Azure Cosmos item | Item | Row | Document | Node or edge | Item
+
 - **_implement partitioning schemes_**
+
+	Azure Cosmos DB uses partitioning to scale individual containers in a database to meet the performance needs of your application. In partitioning, the items in a container are divided into distinct subsets called logical partitions. **Logical partitions** are formed based on the value of a partition key that is associated with each item in a container. All the items in a logical partition have the same partition key value.
+
+	A logical partition also defines the scope of database transactions. You can update items within a logical partition by using a transaction with snapshot isolation. When new items are added to a container, new logical partitions are transparently created by the system. There is no limit to the number of logical partitions in your container. Each logical partition can store up to 20GB of data.
+
+	A container is scaled by distributing data and throughput across **physical partitions**. Internally, one or more logical partitions are mapped to a single physical partition. Typically smaller containers have many logical partitions but they only require a single physical partition. Unlike logical partitions, physical partitions are an internal implementation of the system and they are entirely managed by Azure Cosmos DB.
+
+	If your container has a property that has a wide range of possible values, it is likely a great partition key choice. One possible example of such a property is the item ID. For small read-heavy containers or write-heavy containers of any size, the item ID is naturally a great choice for the partition key.
 
 - **_interact with data using the appropriate SDK_**
 
+	```csharp
+	// Create a new instance of the Cosmos Client
+    var cosmosClient = new CosmosClient(EndpointUri, PrimaryKey);
+	// Create a new database
+    var database = await this.cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
+	 // Create a new container
+    var container = await this.database.CreateContainerIfNotExistsAsync(containerId, "/LastName");
+	// Read the item to see if it exists.  
+    ItemResponse<Family> family = await this.container.ReadItemAsync<Family>(family.Id, new PartitionKey(family.LastName));
+	// Query data
+    var sqlQueryText = "SELECT * FROM c WHERE c.LastName = 'Andersen'";
+    QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
+    FeedIterator<Family> queryResultSetIterator = this.container.GetItemQueryIterator<Family>(queryDefinition);
+    List<Family> families = new List<Family>();
+    while (queryResultSetIterator.HasMoreResults)
+    {
+        FeedResponse<Family> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+        foreach (Family family in currentResultSet)
+        {
+			// Do stuff
+        }
+    }
+	```
+
 - **_set the appropriate consistency level for operations_**
+
+	Consistency can sometimes be an issue when you are working with distributed systems, but Azure Cosmos DB alleviates this situation by offering you five different consistency levels (from strongest to weakest): 
+	- _strong_
+	- _bounded staleness_
+	- _session_
+	- _consistent prefix_
+	- _eventual_
+	
+	The linearizability of the strong consistency model is the gold standard of data programmability. But it adds a steep price from higher write latencies due to data having to replicate and commit across large distances. Strong consistency may also suffer from reduced availability (during failures) because data cannot replicate and commit in every region. Eventual consistency offers higher availability and better performance, but its more difficult to program applications because data may not be completely consistent across all regions.
+
+	**Strong**: Strong consistency offers a linearizability guarantee. Linearizability refers to serving requests concurrently. The reads are guaranteed to return the most recent committed version of an item. A client never sees an uncommitted or partial write. Users are always guaranteed to read the latest committed write.
+
+	**Bounded staleness**: The reads are guaranteed to honor the consistent-prefix guarantee. The reads might lag behind writes by at most "K" versions (that is, "updates") of an item or by "T" time interval, whichever is reached first. In other words, when you choose bounded staleness, the "staleness" can be configured in two ways:
+	- The number of versions (K) of the item
+	- The time interval (T) reads might lag behind the writes
+
+	**Session**: Within a single client session reads are guaranteed to honor the consistent-prefix, monotonic reads, monotonic writes, read-your-writes, and write-follows-reads guarantees. This assumes a single "writer" session or sharing the session token for multiple writers.
+
+	**Consistent prefix**: Updates that are returned contain some prefix of all the updates, with no gaps. Consistent prefix consistency level guarantees that reads never see out-of-order writes.
+
+	**Eventual**: There's no ordering guarantee for reads. In the absence of any further writes, the replicas eventually converge. Eventual consistency is the weakest form of consistency because a client may read the values that are older than the ones it had read before. Eventual consistency is ideal where the application does not require any ordering guarantees.
 
 - **_create Cosmos DB containers_**
 
+	Commands:
+	- Create a Cosmos container with default index policy
+	```
+		az cosmosdb sql container create \
+			-a $accountName -g $resourceGroupName \
+			-d $databaseName -n $containerName \
+			-p $partitionKey --throughput $throughput	
+	```
+
 - **_implement scaling (partitions, containers)_**
 
+	Azure Cosmos DB uses partitioning to scale individual containers in a database to meet the performance needs of your application. In partitioning, the items in a container are divided into distinct subsets called logical partitions. Logical partitions are formed based on the value of a partition key that is associated with each item in a container. All the items in a logical partition have the same partition key value.
+
+	Selecting a partition key with a wide range of possible values ensures that the container is able to scale.	Azure Cosmos DB transparently partitions your container using the logical partition key that you specify in order to elastically scale your provisioned throughput and storage.
+
 - **_implement server-side programming including stored procedures, triggers, and change feed notifications_**
+
+	A **stored procedure** is a piece of application logic written in JavaScript that is registered and executed against a collection as a single transaction. In Azure Cosmos DB, JavaScript is hosted in the same memory space as the database. Hence, requests made within stored procedures execute in the same scope of a database session. This process enables Azure Cosmos DB to guarantee ACID for all operations that are part of a single stored procedure.
+
+	The stored procedure resource has a fixed schema. The body property contains the application logic. The following example illustrates the JSON construct of a stored procedure:
+	```
+	{    
+		"id":"SimpleStoredProc",  
+		"body":"function (docToCreate, addedPropertyName, addedPropertyValue) { getContext().getResponse().setBody('Hello World'); }",  
+		"_rid":"hLEEAI1YjgcBAAAAAAAAgA==",  
+		"_ts":1408058682,  
+		"_self":"dbs\/hLEEAA==\/colls\/hLEEAI1Yjgc=\/sprocs\/hLEEAI1YjgcBAAAAAAAAgA==\/",  
+		"_etag":"00004100-0000-0000-0000-53ed453a0000"  
+	}
+	```
+
+	Merely having _All access mode_ for a particular stored procedure does not allow the user to execute the stored procedure. Instead, the user has to have _All access mode_ at the collection level in order to execute a stored procedure.
+
+	**Triggers** are pieces of application logic that can be executed before (pre-triggers) and after (post-triggers) creation, deletion, and replacement of a document. Triggers are written in JavaScript. Both pre and post triggers do _not_ take parameters. Like stored procedures, triggers live within the confines of a collection, thus confining the application logic to the collection.
+
+	Similar to stored procedures, the triggers resource has a fixed schema. The body property contains the application logic. The following example illustrates the JSON construct of a trigger. There are two additional required parameters when creating a trigger:
+	- _triggerOperation_ - It is the type of operation that invokes the trigger. The acceptable values are: _All_, _Insert_, _Replace_ and _Delete_.
+	- _triggerType_. This specifies when the trigger is fired. The acceptable values are: _Pre_ and _Post_. Pre triggers fire before an operation while Post triggers after an operation.
+
+	**Change feed** in Azure Cosmos DB is a persistent record of changes to a container in the order they occur. Change feed support in Azure Cosmos DB works by listening to an Azure Cosmos container for any changes. It then outputs the sorted list of documents that were changed in the order in which they were modified. The persisted changes can be processed asynchronously and incrementally, and the output can be distributed across one or more consumers for parallel processing. Currently change feed doesn't log deletes. 
+	
+	The feature is supported in all Cosmos DB APIs except Table API.
+
+	Change feed items come in the order of their modification time. This sort order is guaranteed per logical partition key. While consuming the change feed in an Eventual consistency level, there could be duplicate events in-between subsequent change feed read operations (the last event of one read operation appears as the first of the next).
 
 ### Develop solutions that use blob storage
 
@@ -216,6 +548,31 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 ???
 
 ## Implement Azure security (15-20%)
+
+### Implement user authentication and authorization
+
+- **_implement OAuth2 authentication_**
+
+- **_create and implement shared access signatures_**
+
+- **_register apps and use Azure Active Directory to authenticate users_**
+
+- **_control access to resources by using role-based access controls (RBAC)_**
+
+	You control access to resources using Azure RBAC by creating role assignments, which control how permissions are enforced. You can think of these elements as "who", "what", and "where".
+	- _Security principal_ (who): A security principal is just a fancy name for a user, group, or application that you want to grant access to.
+	- _Role definition_ (what you can do): A role definition is a collection of permissions.
+	- _Scope_ (where): Scope is where the access applies to.
+
+### Implement secure cloud solutions
+
+- **_secure app configuration data by using the App Configuration and KeyVault API_**
+	
+- **_manage keys, secrets, and certificates by using the KeyVault API_**
+
+	Key Vault access has two facets: the management of the Key Vault itself (_management plane_), and accessing the data contained in the Key Vault (_data plane_)
+
+- **_implement Managed Identities for Azure resources_**
 
 ## Monitor, troubleshoot, and optimize Azure solutions (10-15%)
 
@@ -355,3 +712,12 @@ Benefits of queues: increased reliability, message delivery guarantees, transact
 	- Azure Active Directory: You can use role-based authentication and identify specific clients based on AAD credentials.
 	- Shared Key: Sometimes referred to as an account key, this is an encrypted key signature associated with the storage account. Every storage account has two of these keys that can be passed with each request to authenticate access. Using this approach is like using a root password - it provides full access to the storage account.
 	- Shared access signature - A shared access signature (SAS) is a generated URI that grants limited access to objects in your storage account to clients. You can restrict access to specific resources, permissions, and scope to a data range to automatically turn off access after a period of time.
+
+
+
+# Broken URLs for Thomas Maurer:
+	- Extend Azure Resource Manager template functionality
+	- Custom configuration and application settings in Azure Web Sites (8 years old - looks goofy)
+
+# Broken tests for Pluralsight: 
+	AKS is out of scope! (from 22 IaaS questions almost half are about AKS)
