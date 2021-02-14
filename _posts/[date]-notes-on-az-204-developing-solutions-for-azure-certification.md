@@ -659,16 +659,50 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_implement OAuth2 authentication_**
 
+	To protect an API with Azure AD:
+	1. Register an application in Azure AD that represents the API. 
+	2. Every client application that calls the API needs to be registered as an application in Azure AD. 
+	3. Once that you have registered both applications to represent the API and the Client, grant permissions to allow the client-app to call the backend-app. 
+	4. Enable OAuth 2.0 user authorization in the client app (from API Management instance). At this point the client app can obtain access tokens from Azure AD.	
+	5. Enable OAuth 2.0 user authorization for your API. This enables the client app to know that it needs to obtain an access token on behalf of the user, before making calls to your API.
+	6. Configure a JWT (JSON Web Token) validation policy to pre-authorize requests. Otherwise, the API Management does not validate the access token at this point.
+
 - **_create and implement shared access signatures_**
+
+	A shared access signature is a signed URI that points to one or more storage resources. The URI includes a token that contains a special set of query parameters. The token indicates how the resources may be accessed by the client. One of the query parameters, the signature, is constructed from the SAS parameters and signed with the key that was used to create the SAS. This signature is used by Azure Storage to authorize access to the storage resource. Use a SAS to give secure access to resources in your storage account to any client who does not otherwise have permissions to those resources.
+
+	A shared access signature (SAS) provides secure delegated access to resources in your storage account. With a SAS, you have granular control over how a client can access your data. For example:
+	- What resources the client may access.
+	- What permissions they have to those resources.
+	- How long the SAS is valid.
+
+	Azure Storage supports three types of shared access signatures:
+	- _User delegation SAS_. A user delegation SAS is secured with Azure Active Directory (Azure AD) credentials and also by the permissions specified for the SAS. A user delegation SAS applies to Blob storage only.
+	- _Service SAS_. A service SAS is secured with the storage account key. A service SAS delegates access to a resource in only one of the Azure Storage services: Blob storage, Queue storage, Table storage, or Azure Files.
+	- _Account SAS_. An account SAS is secured with the storage account key. An account SAS delegates access to resources in one or more of the storage services. All of the operations available via a service or user delegation SAS are also available via an account SAS.
+
+	A shared access signature can take one of the following two forms:
+	- _Ad hoc SAS_. When you create an ad hoc SAS, the start time, expiry time, and permissions are specified in the SAS URI. Any type of SAS can be an ad hoc SAS.
+	- _Service SAS with stored access policy_. A stored access policy is defined on a resource container, which can be a blob container, table, queue, or file share. The stored access policy can be used to manage constraints for one or more service shared access signatures. When you associate a service SAS with a stored access policy, the SAS inherits the constraints—the start time, expiry time, and permissions—defined for the stored access policy.
+
+	You can sign a SAS token with a user delegation key or with a storage account key (Shared Key). Microsoft recommends using a user delegation SAS when possible for superior security.
+	- You can sign a SAS token by using a _user delegation key_ that was created using Azure Active Directory (Azure AD) credentials. A user delegation SAS is signed with the user delegation key. To get the key, and then create the SAS, an Azure AD security principal must be assigned an Azure role that includes the `Microsoft.Storage/storageAccounts/blobServices/generateUserDelegationKey` action.
+	- Both a service SAS and an account SAS are signed with the _storage account key_. To create a SAS that is signed with the account key, an application must have access to the account key.
+
+	The _SAS token_ is a string that you generate on the client side, for example by using one of the Azure Storage client libraries. The SAS token is not tracked by Azure Storage in any way. You can create an unlimited number of SAS tokens on the client side. After you create a SAS, you can distribute it to client applications that require access to resources in your storage account.
 
 - **_register apps and use Azure Active Directory to authenticate users_**
 
+	Azure AD can be used for all your applications, and by centralizing your application management you can use the same identity management features, tools, and policies across your entire app portfolio. Doing so will provide a unified solution that improves security, reduces costs, increases productivity, and enables you to ensure compliance. And you will get remote access to on-premises apps. 
+
 - **_control access to resources by using role-based access controls (RBAC)_**
 
-	You control access to resources using Azure RBAC by creating role assignments, which control how permissions are enforced. You can think of these elements as "who", "what", and "where".
+	Azure RBAC is an authorization system built on Azure Resource Manager that provides fine-grained access management of Azure resources. You control access to resources using Azure RBAC by creating _role assignments_, which control how permissions are enforced. You can think of these elements as "who", "what", and "where".
 	- _Security principal_ (who): A security principal is just a fancy name for a user, group, or application that you want to grant access to.
 	- _Role definition_ (what you can do): A role definition is a collection of permissions.
-	- _Scope_ (where): Scope is where the access applies to.
+	- _Scope_ (where): Scope is where the access applies to. In Azure, you can specify a scope at four levels: management group, subscription, resource group, or resource. Scopes are structured in a parent-child relationship. You can assign roles at any of these levels of scope.
+
+	Azure RBAC supports _deny assignments_ in a limited way. Similar to a role assignment, a deny assignment attaches a set of deny actions to a user, group, service principal, or managed identity at a particular scope for the purpose of denying access. Deny assignments take precedence over role assignments.
 
 ### Implement secure cloud solutions
 
@@ -681,6 +715,22 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 - **_implement Managed Identities for Azure resources_**
 
 ## Monitor, troubleshoot, and optimize Azure solutions (10-15%)
+
+### Integrate caching and content delivery within solutions
+
+- **_develop code to implement CDNs in solutions_**
+
+- **_configure cache and expiration policies for FrontDoor, CDNs, or Redis caches Store and retrieve data in Azure Redis cache_**
+
+### Instrument solutions to support monitoring and logging
+
+- **_configure instrumentation in an app or service by using Application Insights_**
+
+- **_analyze log data and troubleshoot solutions by using Azure Monitor_**
+
+- **_implement Application Insights Web Test and Alerts_**
+
+- **_implement code that handles transient faults_**
 
 ## Connect to and consume Azure services and third-party services (25-30%)
 
@@ -824,6 +874,7 @@ Benefits of queues: increased reliability, message delivery guarantees, transact
 # Broken URLs for Thomas Maurer:
 	- Extend Azure Resource Manager template functionality
 	- Custom configuration and application settings in Azure Web Sites (8 years old - looks goofy)
+	- Develop line-of-business apps for Azure Active Directory - could be replaced with: https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal or https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/five-steps-to-full-application-integration-with-azure-ad
 
 # Broken tests for Pluralsight: 
 	AKS is out of scope! (from 22 IaaS questions almost half are about AKS)
