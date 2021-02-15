@@ -829,11 +829,69 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_configure instrumentation in an app or service by using Application Insights_**
 
+	Application Insights, a feature of Azure Monitor, is an extensible Application Performance Management (APM) service for developers and DevOps professionals. How does it work? You install a small instrumentation package (SDK) in your application or enable Application Insights using the Application Insights Agent when supported. The instrumentation monitors your app and directs the telemetry data to an Azure Application Insights Resource using a unique GUID that we refer to as an Instrumentation Key. You can instrument not only the web service application, but also any background components, and the JavaScript in the web pages themselves. The application and its components can run anywhere - it doesn't have to be hosted in Azure.
+
+	_Live Metrics_ can be used to quickly verify if Application Insights monitoring is configured correctly. It shows CPU usage of the running process in near real-time. It can also show other telemetry like Requests, Dependencies, Traces, etc.
+
+	The default configuration collects ILogger logs of severity Warning and above.
+
+	_Performance Counters_. SDK Versions 2.8.0 and later support cpu/memory counter in Linux. No other counter is supported in Linux. The recommended way to get system counters in Linux (and other non-Windows environments) is by using EventCounters.
+
+	If your application has client-side components, you can enable client-side telemetry for web applications by using: `@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet`.
+
+	The Application Insights SDK for ASP.NET Core supports both _fixed-rate_ and _adaptive sampling_. Adaptive sampling is enabled by default.
+
+	Use _telemetry initializers_ when you want to enrich telemetry with additional information.
+
 - **_analyze log data and troubleshoot solutions by using Azure Monitor_**
+
+	Azure Monitor helps you maximize the availability and performance of your applications and services. It delivers a comprehensive solution for collecting, analyzing, and acting on telemetry from your cloud and on-premises environments.
+
+	_Azure Monitor Logs_ is a feature of Azure Monitor that collects and organizes log and performance data from monitored resources. Data from different sources such as platform logs from Azure services, log and performance data from virtual machines agents, and usage and performance data from applications can be consolidated into a single workspace so they can be analyzed together using a sophisticated query language that's capable of quickly analyzing millions of records.
+
+	Data collected by Azure Monitor Logs is stored in one or more Log Analytics workspaces. The workspace defines the geographic location of the data, access rights defining which users can access data, and configuration settings such as the pricing tier and data retention. You must create at least one workspace to use Azure Monitor Logs.
+
+	Once you create a Log Analytics workspace, you must configure different sources to send their data. No data is collected automatically. This configuration will be different depending on the data source.
+
+	Log data from Application Insights is also stored in Azure Monitor Logs, but it's stored different depending on how your application is configured.
+
+	Data is retrieved from a Log Analytics workspace using a log query which is a read-only request to process data and return results. Log queries are written in Kusto Query Language (KQL), which is the same query language used by Azure Data Explorer. You can write log queries in Log Analytics to interactively analyze their results, use them in alert rules to be proactively notified of issues, or include their results in workbooks or dashboards. Insights include prebuilt queries to support their views and workbooks.
 
 - **_implement Application Insights Web Test and Alerts_**
 
+	Availability checking and Alerting are features of Application Insights. Application Insight’s web tests will ping your application from multiple locations to check availability and then alert you when it is down.
+
+	There are three types of availability tests:
+	- URL ping test: a simple test that you can create in the Azure portal.
+	- Multi-step web test: A recording of a sequence of web requests, which can be played back to test more complex scenarios. Multi-step web tests are created in Visual Studio Enterprise and uploaded to the portal for execution.
+	- Custom Track Availability Tests: If you decide to create a custom application to run availability tests, the TrackAvailability() method can be used to send the results to Application Insights.
+
+	Creating a **Web Test**:
+	- In Azure portal -> Application Insights -> Availability tile -> Add Web Test
+
 - **_implement code that handles transient faults_**
+
+	Example - Polly:	
+	```csharp
+	    var policy = Policy.Handle<Exception>().WaitAndRetryAsync(
+			retryCount: 3, // Retry 3 times
+			sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(200 * Math.Pow(2, attempt - 1)), // Exponential backoff based on an initial 200 ms delay.
+			onRetry: (exception, attempt) =>
+			{
+				// Capture some information for logging/telemetry.
+				logger.LogWarn($"ExecuteReaderWithRetryAsync: Retry {attempt} due to {exception}.");
+			});
+
+		// Retry the following call according to the policy.
+		await policy.ExecuteAsync<SqlDataReader>(async token =>
+		{
+			// This code is executed within the Policy
+
+			if (conn.State != System.Data.ConnectionState.Open) await conn.OpenAsync(token);
+			return await command.ExecuteReaderAsync(System.Data.CommandBehavior.Default, token);
+
+		}, cancellationToken);
+	```
 
 ## Connect to and consume Azure services and third-party services (25-30%)
 
