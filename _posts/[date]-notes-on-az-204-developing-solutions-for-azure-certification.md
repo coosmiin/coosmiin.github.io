@@ -899,7 +899,15 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_create a Logic App_**
 
+	Azure Logic Apps is a cloud service that helps you schedule, automate, and orchestrate tasks, business processes, and workflows when you need to integrate apps, data, systems, and services across enterprises or organizations.
+
+	Every logic app must start with a trigger, which fires when a specific event happens, or when a specific condition is met.
+
 - **_create a custom connector for Logic Apps_**
+
+	In Azure Logic Apps, you must first create the custom connector resource before defining the behavior of the connector using an OpenAPI definition or a Postman collection.
+
+	To create a custom connector, you must describe the API you want to connect to so that the connector understands the API's operations and data structures.
 
 - **_create a custom template for Logic Apps_**
 
