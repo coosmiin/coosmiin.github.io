@@ -911,6 +911,10 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 - **_create a custom template for Logic Apps_**
 
+	To get you started creating workflows more quickly, Logic Apps provides templates, which are prebuilt logic apps that follow commonly used patterns. Use these templates as provided or edit them to fit your scenario.
+	
+	Azure Logic Apps provides a prebuilt logic app Azure Resource Manager template that you can reuse, not only for creating logic apps, but also to define the resources and parameters to use for deployment. You can use this template for your own business scenarios or customize the template to meet your requirements.
+
 ### Implement API Management
 
 The **Azure API Management (APIM)** service enables you to construct an API from a set of disparate microservices. **Azure API Management (APIM)** is a fully managed cloud service that you can use to publish, secure, transform, maintain, and monitor APIs. It helps organizations publish APIs to external, partner, and internal developers to unlock the potential of their data and services. API Management handles all the tasks involved in mediating API calls, including _request authentication and authorization_, _rate limit and quota enforcement_, _request and response transformation_, _logging and tracing_, and _API version management_. APIM enables you to create and manage modern API gateways for existing backend services no matter where they are hosted.
@@ -933,11 +937,26 @@ By default the new API is created under the `azure-api.net` domain.
 
 - **_configure authentication for APIs_**
 
-	???
+	When you publish APIs through Azure API Management, it's easy and common to secure access to those APIs by using subscription keys. Client applications that need to consume the published APIs must include a valid subscription key in HTTP requests when they make calls to those APIs. To get a subscription key for accessing APIs, a subscription is required.
+
+	API Management provides the capability to secure access to APIs (i.e., client to API Management) using client certificates. You can validate incoming certificate and check certificate properties against desired values using policy expressions.
+
+	Policies can be configured to check the issuer and subject of a client certificate. Example:
+	```xml
+		<choose>
+			<when condition="@(context.Request.Certificate == null || !context.Request.Certificate.Verify() || context.Request.Certificate.Issuer != "trusted-issuer" || context.Request.Certificate.SubjectName.Name != "expected-subject-name")" >
+				<return-response>
+					<set-status code="403" reason="Invalid client certificate" />
+				</return-response>
+			</when>
+		</choose>	
+	```
 
 - **_define policies for APIs_**
 
-	???
+	In Azure API Management (APIM), policies are a powerful capability of the system that allow the publisher to change the behavior of the API through configuration. Policies are a collection of Statements that are executed sequentially on the request or response of an API. Popular Statements include format conversion from XML to JSON and call rate limiting to restrict the amount of incoming calls from a developer. Many more policies are available out of the box.
+
+	The policy definition is a simple XML document that describes a sequence of inbound and outbound statements. The XML can be edited directly in the definition window. A list of statements is provided to the right and statements applicable to the current scope are enabled and highlighted.
 
 ### Develop event-based solutions
 
@@ -947,7 +966,11 @@ Events are lighter weight than messages, and are most often used for broadcast c
 
 	**Azure Event Grid** is a fully-managed event routing service running on top of Azure Service Fabric. Event Grid distributes events from different sources, such as Azure Blob storage accounts or Azure Media Services, to different handlers, such as Azure Functions or Webhooks. Event Grid was created to make it easier to build event-based and serverless applications on Azure.
 
-	Event Grid supports most Azure services as a publisher or subscriber and can be used with third-party services. It provides a dynamically scalable, low-cost, messaging system that allows publishers to notify subscribers about a status change.
+	Event Grid supports most Azure services as a publisher or subscriber and can be used with third-party services. It provides a dynamically scalable, low-cost, messaging system that allows publishers to notify subscribers about a status change. It has the following characteristics:
+	- dynamically scalable
+	- low cost
+	- serverless
+	- at least once delivery
 
 	There are several concepts in Azure Event Grid that connect a source to a subscriber:
 	- Events: What happened. Events are the data messages passing through Event Grid that describe what has taken place. Each event is self-contained, can be up to 64 KB.
@@ -964,18 +987,30 @@ Events are lighter weight than messages, and are most often used for broadcast c
 	- _Fan-out_: You can subscribe to an unlimited number of endpoints to the same events and topics.
 	- _Reliability_: Event Grid retries event delivery for up to 24 hours for each subscription.
 	- _Pay-per-event_: Pay only for the number of events that you transmit.
+	- _High throughput_: Build high-volume workloads on Event Grid.
+	- _Built-in Events_: Get up and running quickly with resource-defined built-in events.
+	- _Custom Events_: Use Event Grid to route, filter, and reliably deliver custom events in your app.	
 
 - **_implement solutions that use Azure Notification Hubs_**
 
-	???
+	Azure Notification Hubs provide an easy-to-use and scaled-out push engine that enables you to send notifications to any platform (iOS, Android, Windows, etc.) from any back-end (cloud or on-premises). Notification Hubs works great for both enterprise and consumer scenarios.
+
+	Notification Hubs eliminates all complexities associated with sending push notifications on your own from your app backend. Its multi-platform, scaled-out push notification infrastructure reduces push-related coding and simplifies your backend. With Notification Hubs, devices are merely responsible for registering their PNS handles with a hub, while the backend sends messages to users or interest groups.
+
+	To facilitate a seamless and unifying experience across Azure services, App Service Mobile Apps has built-in support for notifications using Azure Notification Hubs. App Service Mobile Apps offers a highly scalable, globally available mobile application development platform for enterprise developers and systems integrators that brings a rich set of capabilities to mobile developers.
 
 - **_implement solutions that use Azure Event Hub_**
 
-	**Azure Event Hubs** is a cloud-based, event-processing service that can receive and process millions of events per second. Event Hubs acts as a front door for an event pipeline, to receive incoming data and stores this data until processing resources are available.. Unlike Event Grid, however, it is optimized for extremely high throughput, a large number of publishers, security, and resiliency.
+	**Azure Event Hubs** is a cloud-based, event-processing service that can receive and process millions of events per second. Event Hubs acts as a front door for an event pipeline, to receive incoming data and stores this data until processing resources are available.. Unlike Event Grid, however, it is optimized for extremely high throughput, a large number of publishers, security, and resiliency. It has the following characteristics:
+	- low latency
+	- capable of receiving and processing millions of events per second
+	- at least once delivery
 
 	_Events_. An event is a small packet of information (a datagram) that contains a notification. Events can be published individually, or in batches, but a single publication (individual or batch) can't exceed 1 MB.
 
-	_Publishers_. Event publishers are any app or device that can send out events using either HTTPS or Advanced Message Queuing Protocol (AMQP) 1.0. For publishers that send data frequently, AMQP has better performance. However, it has a higher initial session overhead, because a persistent bidirectional socket and transport-level security (TLS) or SSL/TLS has to be set up first.
+	_Publishers_. Event publishers are any app or device that can send out events using either HTTPS, Advanced Message Queuing Protocol (AMQP) 1.0 or the Kafka protocol. For publishers that send data frequently, AMQP has better performance. However, it has a higher initial session overhead, because a persistent bidirectional socket and transport-level security (TLS) or SSL/TLS has to be set up first. Event publishers use Azure Active Directory based authorization with OAuth2-issued JWT tokens or an Event Hub-specific Shared Access Signature (SAS) token gain publishing access.
+
+	Event Hubs enables granular control over event publishers through publisher policies. Publisher policies are run-time features designed to facilitate large numbers of independent event publishers.
 	
 	_Subscribers_. Event subscribers are apps that use one of two supported programmatic methods to receive and process events from an Event Hub.
 
@@ -983,7 +1018,7 @@ Events are lighter weight than messages, and are most often used for broadcast c
 
 	_Partitions_. As Event Hubs receives communications, it divides them into _partitions_. _Partitions_ are buffers into which the communications are saved. Because of the event buffers, events are not completely ephemeral, and an event isn't missed just because a subscriber is busy or even offline. The subscriber can always use the buffer to "catch up." By default, events stay in the buffer for 24 hours before they automatically expire. The buffers are called partitions because the data is divided amongst them. Every event hub has at least two partitions, and each partition has a separate set of subscribers.
 
-	_Capture_. Event Hubs can send all your events immediately to Azure Data Lake or Azure Blob storage for inexpensive, permanent persistence.
+	_Capture_. Event Hubs can send all your events immediately to Azure Data Lake or Azure Blob storage for inexpensive, permanent persistence. Captured data is written in the Apache Avro format.
 
 	_Authentication_. All publishers are authenticated and issued a token. This means Event Hubs can accept events from external devices and mobile apps, without worrying that fraudulent data from pranksters could ruin our analysis.
 
@@ -1003,7 +1038,11 @@ Benefits of queues: increased reliability, message delivery guarantees, transact
 
 - **_implement solutions that use Azure Service Bus**_
 
-	**Service Bus** is a message broker system intended for enterprise applications. These apps often utilize multiple communication protocols, have different data contracts, higher security requirements, and can include both cloud and on-premises services. Service Bus is built on top of a dedicated messaging infrastructure designed for exactly these scenarios.
+	**Service Bus** is a message broker system intended for enterprise applications. These apps often utilize multiple communication protocols, have different data contracts, higher security requirements, and can include both cloud and on-premises services. Service Bus is built on top of a dedicated messaging infrastructure designed for exactly these scenarios. It has the following characteristics:
+	- reliable asynchronous message delivery (enterprise messaging as a service) that requires polling
+	- advanced messaging features like FIFO, batching/sessions, transactions, dead-lettering, temporal control, routing and filtering, and duplicate detection
+	- at least once delivery
+	- optional in-order delivery
 
 	A _queue_ is a simple temporary storage location for messages. A sending component adds a message to the queue. A destination component picks up the message at the front of the queue. Under ordinary circumstances, each message is received by only one receiver.
 
