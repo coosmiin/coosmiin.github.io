@@ -1050,10 +1050,10 @@ Benefits of queues: increased reliability, message delivery guarantees, transact
 
 	A _relay_ is an object that performs synchronous, two-way communication between applications. Unlike queues and topics, it is not a temporary storage location for messages. Instead, it provides bidirectional, unbuffered connections across network boundaries such as firewalls. Use a relay when you want direct communications between components as if they were located on the same network segment but separated by network security devices.
 
-	Use Service Bus topics if you:
+	Use Service Bus _topics_ if you:
 	- Need multiple receivers to handle each message
 
-	Use Service Bus queues if you:
+	Use Service Bus _queues_ if you:
 	- Need an At-Most-Once delivery guarantee.
 	- Need a FIFO guarantee.
 	- Need to group messages into transactions.
