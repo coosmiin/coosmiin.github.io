@@ -562,7 +562,6 @@ Append blobs | Append blobs are made up of blocks like block blobs, but they are
 
 	Commands:
 	- Move: `azcopy copy "https://sourceaccount.blob.core.windows.net/sourcecontainer/*?<source sas token>" "https://destaccount.blob.core.windows.net/destcontainer/*?<dest sas token>"`
-	- 
 
 	The **.NET Storage Client library** is a collection of objects and methods that you can use to build custom applications that manipulate items held in Azure Storage. 
 
