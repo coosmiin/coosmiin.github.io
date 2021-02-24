@@ -1,7 +1,7 @@
 ---
 title: "Developing Solutions for Microsoft Azure AZ-204 certification preparations notes"
-date: 2020-12-31 +0200
-last_modified_at: 2021-01-03 +0200
+date: 2021-02-21 +0200
+last_modified_at: 2021-01-21 +0200
 categories: AZ-204 azure certification
 toc: true
 toc_label: Topics
