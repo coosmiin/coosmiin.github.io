@@ -12,7 +12,7 @@ While learning for the [AZ-900 Microsoft Azure Fundamentals](https://docs.micros
 
 At the end, taking a simulation exam offered through a [Pluralsight's](https://app.pluralsight.com/paths/certificate/microsoft-azure-fundamentals-az-900) subscription via Kaplan Learn seemed like a good idea. However, I've realized that the simulation exams are definitely not adapted to the latest changes in the exam skills outline document. They might even be miss-leading and untrustworthy since the difference between the latest versions of the exam skills outline document are significant enough. Nevertheless, it proved that just following the learning paths it might not be enough as there were details in the questions that were not covered in the learning paths.
 
-**UPDATE 2021-01** 
+**UPDATE 2021-01-03** 
 
 Few remarks right after I've passed the exam:
 - I have mixed feelings about using an outdated Kaplan Learn plan. If they don't update their content - half of their question are useless. You might be better reading the learn path once more.

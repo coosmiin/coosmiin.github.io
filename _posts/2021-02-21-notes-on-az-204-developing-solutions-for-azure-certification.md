@@ -8,7 +8,14 @@ toc_label: Topics
 toc_icon: quote-right
 ---
 
-Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-notes-on-az-900-azure-fundamentals-certification %}) proved to be a good idea so let's do it again. This time for [AZ-204 Developing Solutions for Microsoft Azure](https://docs.microsoft.com/en-us/learn/certifications/exams/az-204). Same approach: start with [exam skill outline](https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4oZ7B) (May 18, 2020 version) and follow the [learning paths](https://docs.microsoft.com/en-us/learn/certifications/exams/az-204?tab=tab-learning-paths).
+Taking notes for [AZ-900 Microsoft Azure Fundamentals]({% post_url 2020-12-31-notes-on-az-900-azure-fundamentals-certification %}) proved to be a good idea so let's do it again. This time for [AZ-204 Developing Solutions for Microsoft Azure](https://docs.microsoft.com/en-us/learn/certifications/exams/az-204). Same approach: start with [exam skill outline](https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4oZ7B) (May 18, 2020 version) and follow the [learning paths](https://docs.microsoft.com/en-us/learn/certifications/exams/az-204?tab=tab-learning-paths). Additionaly, check the Pluralsight course [Developing Solutions for Microsoft Azure (AZ-204)](https://app.pluralsight.com/paths/skills/developing-solutions-for-microsoft-azure-az-204) and follow related practice exam offered by Kaplan.
+
+**UPDATE 2021-02-024**
+
+Few remarks after I passed the exam:
+- The Microsoft Learning Path proved to be almost a complete waste of time. Only about 15-20% of the exam skill outline I could follow based on the Learning Path. The rest of the path was about interesting stuff, but not related to the exam.
+- The Kaplan tests, again, proved to be outdated. Not like for the AZ-900 but I still had to ignore lots of questions (about AKS for example)
+- The Pluralsight videos were to the point and very useful but it's just impossible to cover everything by video. The 30 min. Pluralsight Exam Alerts videos were extremely useful. They pin point the main topics and show you what kind of questions you might get in the exam.
 
 ## Develop Azure compute solutions (25-30%)
 
