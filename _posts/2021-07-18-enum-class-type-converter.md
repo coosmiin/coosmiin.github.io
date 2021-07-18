@@ -1,10 +1,10 @@
 ---
 title: "Enum class type converters"
-date: 2021-07-XX +0200
+date: 2021-07-18 +0200
 categories: C# classenum typeconverter
 ---
 
-Everybody loves [class enums](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/enumeration-classes-over-enum-types), right? Maybe not, but how do you use them when you want to map them to settings read from configuration? You have a .Net app which reads JSON settings from `appSettings.json` and one of the settings needs to be mapped to an enumaration. But instead of an `enum` you would like to use an enumeration class. How do you do it? [Type converters](https://docs.microsoft.com/dotnet/api/system.componentmodel.typeconverter) to the rescue.
+Everybody loves [class enums](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/enumeration-classes-over-enum-types), right? Maybe not, but how do you use them when you want to map to settings read from configuration? You have a .Net app which reads JSON settings from `appSettings.json` and one of the settings needs to be mapped to an enumeration. But instead of an `enum` you would like to use an enumeration class. How do you do it? [Type converters](https://docs.microsoft.com/dotnet/api/system.componentmodel.typeconverter) to the rescue.
 
 Let's say we have this `appSettings.json`: 
 ```json
@@ -24,12 +24,11 @@ public class MyEnumValue
     public static implicit operator string(MyEnumValue enumValue) => enumValue.Name;
 }
 ```
-> Note: usually these type of classes should iplement `IComparable` or `IEquatable<T>` - removed for brevity.
+> Note: usually these type of classes should implement `IComparable` or `IEquatable<T>` - removed for brevity.
 
 The implicit operator is used just to be able to use `string` and `MyEnumValue` interchangeably and has no other relevance to the case being described here.
 
 The options class used to read the whole settings object:
-
 ```csharp
 public class MyClass
 {
@@ -41,9 +40,7 @@ public class MyClass
     public string GetValue() => _options.MyEnumValue;
 }
 ```
-
 To be complete, this is the simplest way to build your app host to automatically read your app settings json and to register it for dependency injection via an `IOptions<T>` type:
-
 ```csharp
 static void Main(string[] args)
 {
@@ -61,13 +58,11 @@ private static IHostBuilder CreateHostBuilder(string[] args) =>
       services.AddSingleton<MyClass>();
     });
 ```
-
 > Note that `Host.CreateDefaultBuilder` will automatically load app `IConfiguration` from `appSettings.json` 
 
-If you would run your program now, it would fail because the string value of `enumTypeValue1` cannot be mapped to `MyEnumValue.EnumTypeValue1` and the `_options.MyEnumValue` will be null.
+If you would run your console application now, it would fail because the string value of `enumTypeValue1` cannot be mapped to `MyEnumValue.EnumTypeValue1` and the `_options.MyEnumValue` will be null.
 
-By now you would already guess that the missing piece of the puzzle is the type converter:
-
+By now you would already have guessed that the missing piece of the puzzle is the type converter:
 ```csharp
 	public class MyEnumValueTypeConverter : TypeConverter
 	{
@@ -84,7 +79,6 @@ By now you would already guess that the missing piece of the puzzle is the type 
 			return base.ConvertFrom(context, culture, value);
 		}
 ```
-
-And now, if we adnotate our enum value class with the `[TypeConverter(typeof(MyEnumValueTypeConverter))]` attribute our app will work just fine.
+And now, if we annotate our enum value class with the `[TypeConverter(typeof(MyEnumValueTypeConverter))]` attribute our app will work just fine.
 
 This is it, the easy-peasy way of using enumeration classes mapped to `appSettings.json` options values.
