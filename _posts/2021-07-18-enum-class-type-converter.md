@@ -81,4 +81,4 @@ By now you would already have guessed that the missing piece of the puzzle is th
 ```
 And now, if we annotate our enum value class with the `[TypeConverter(typeof(MyEnumValueTypeConverter))]` attribute our app will work just fine.
 
-This is it, the easy-peasy way of using enumeration classes mapped to `appSettings.json` options values.
+This is it, the easy-peasy way of using enumeration classes mapped to `appSettings.json` options values. You can download a full working example from [github](https://github.com/coosmiin/Playground/tree/master/C%23%20-%20Class%20Enum%20Type%20Converter)
