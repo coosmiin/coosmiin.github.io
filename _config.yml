@@ -48,7 +48,7 @@ author:
 analytics:
   provider: "google-gtag"
   google: 
-    tracking_id: "UA-158362181-1"
+    tracking_id: "382069748"
 
 defaults:
   -
